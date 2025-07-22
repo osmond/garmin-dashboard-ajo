@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Garmin Dashboard</title>
+  <style>
+    body { font-family: sans-serif; background: #111; color: #fff; margin: 2rem; }
+    h1 { color: #4fc3f7; }
+    .chart-container { max-width: 600px; }
+  </style>
+</head>
+<body>
+  <h1>Garmin Dashboard</h1>
+  <div id="summary"></div>
+  <canvas id="stepsChart" class="chart-container"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    fetch('/api/summary')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('summary').innerHTML = `
+          <p><strong>Steps:</strong> ${data.steps}</p>
+          <p><strong>Resting HR:</strong> ${data.resting_hr}</p>
+          <p><strong>VO2 Max:</strong> ${data.vo2max}</p>
+          <p><strong>Sleep:</strong> ${data.sleep_hours} hrs</p>
+        `;
+        new Chart(document.getElementById('stepsChart'), {
+          type: 'line',
+          data: data.stepsChart,
+          options: { responsive: true }
+        });
+      });
+  </script>
+</body>
+</html>
