@@ -12,12 +12,14 @@ export default function AjoDashboard() {
 
   if (!summary) return <p>Loading...</p>;
 
+  const restingHrValue = summary.resting_hr ?? summary.restingHr;
+
   return (
     <div className="p-6 font-sans">
       <h1 className="text-2xl font-bold mb-4">Andy’s Garmin Summary</h1>
       <ul className="space-y-2">
         <li>Steps: {summary.steps}</li>
-        <li>Resting HR: {summary.restingHr}</li>
+        <li>Resting HR: {restingHrValue ? restingHrValue : 'N/A'}</li>
         <li>VO2 Max: {summary.vo2max}</li>
         <li>Sleep Hours: {summary.sleep_hours}</li>
       </ul>
