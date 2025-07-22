@@ -1,9 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const { fetchGarminSummary } = require('./importGarmin'); // assumes this function is exported
 
 dotenv.config();
+
+const { fetchGarminSummary } = require('./importGarmin'); // assumes this function is exported
 
 const app = express();
 const PORT = process.env.PORT || 3001;
