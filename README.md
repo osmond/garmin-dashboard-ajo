@@ -13,5 +13,5 @@ Write commit messages in the present-tense imperative, describing what the commi
 
 1. Copy `.env.example` to `.env` and fill in your Garmin credentials and InfluxDB connection details.
 2. Run `npm install` in the `api` folder.
-3. Start the API with `node api/index.js`.
+3. Start the API with `npm start` in the `api` folder.
 4. From `frontend/react-app`, run `npm install` then `npm run dev` to start the React app.
