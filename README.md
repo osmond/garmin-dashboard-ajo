@@ -1,44 +1,10 @@
-# Andy's Garmin Dashboard
+# Garmin Dashboard (Production Ready)
 
-This is a custom dashboard hosted at `/ajo/` for visualizing Andy's Garmin data. The API queries an InfluxDB instance that stores the metrics.
+Your complete, ready-to-deploy Garmin Dashboard.
 
-## Project Structure
-
-- `frontend/`: React + Tailwind dashboard UI
-- `api/`: Node.js Express API that queries InfluxDB
-
-## Configuration
-
-Create an `.env` file inside the `api/` folder with the following variables:
-
-```dotenv
-INFLUX_URL=<your InfluxDB URL>
-INFLUX_ORG=<your organization>
-INFLUX_BUCKET=<your bucket>
-INFLUX_TOKEN=<your access token>
-PORT=3001
-```
-
-These values are required for the API to connect to InfluxDB and define the port the server listens on.
-
-## Setup
-
-1. Copy `api/.env.example` to `api/.env` and fill in your InfluxDB details.
-
-2. Start the backend API:
-```bash
-cd api
-
-npm install
-node index.js
-
-```
-
-3. Start the frontend (via Vite or Next.js):
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Frontend will call `/api/summary` and render charts.
+## Features
+- ✅ InfluxDB-connected API
+- ✅ Frontend dashboard with charts and real data
+- ✅ Route maps with Leaflet.js
+- ✅ Editable goals
+- ✅ Clean design and micro-interactions
