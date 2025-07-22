@@ -4,7 +4,7 @@ const { fetchGarminSummary } = require('./scraper');
 require('dotenv').config();
 
 const app = express();
-const port = 3002;
+const port = process.env.PORT || 3002;
 
 app.get('/api/summary', async (req, res) => {
   try {
