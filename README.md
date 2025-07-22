@@ -12,7 +12,7 @@ This is a custom dashboard hosted at `/ajo/` for visualizing Andy's Garmin data.
 1. Start the backend API:
 ```bash
 cd api
-node index.js
+npm start
 ```
 
 2. Start the frontend (via Vite or Next.js):
