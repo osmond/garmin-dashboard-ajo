@@ -9,7 +9,9 @@ This is a custom dashboard hosted at `/ajo/` for visualizing Andy's Garmin data.
 
 ## Setup
 
-1. Start the backend API:
+1. Copy `api/.env.example` to `api/.env` and fill in your InfluxDB details.
+
+2. Start the backend API:
 ```bash
 cd api
 
@@ -18,7 +20,7 @@ node index.js
 
 ```
 
-2. Start the frontend (via Vite or Next.js):
+3. Start the frontend (via Vite or Next.js):
 ```bash
 cd frontend
 npm install
