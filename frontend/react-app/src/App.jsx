@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import { Chart, LineElement, PointElement, LinearScale, CategoryScale, Filler } from 'chart.js'
+
 import RouteMap from './RouteMap.jsx'
+
+import InsightsPanel from './InsightsPanel'
+
 import './App.css'
 
 Chart.register(LineElement, PointElement, LinearScale, CategoryScale, Filler)
@@ -81,6 +85,7 @@ function App() {
         />
       </div>
 
+
       <div className="route-loader">
         <input
           value={activityId}
@@ -91,6 +96,9 @@ function App() {
       </div>
 
       <RouteMap points={route} />
+
+      <InsightsPanel weekly={weekly} />
+
     </div>
   )
 }
