@@ -14,7 +14,6 @@
   <h1>Garmin Dashboard</h1>
   <div id="summary"></div>
   <canvas id="weeklyChart" class="chart-container"></canvas>
-  <canvas id="stepsChart" class="chart-container"></canvas>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     Promise.all([
@@ -36,15 +35,7 @@
         <p><strong>Resting HR:</strong> ${data.resting_hr}</p>
         <p><strong>VO2 Max:</strong> ${data.vo2max}</p>
         <p><strong>Sleep:</strong> ${data.sleep_hours} hrs</p>
-        <p><strong>Intensity Minutes:</strong> ${data.intensity_minutes}</p>
-        <p><strong>Training Load:</strong> ${data.training_load}</p>
-        <p><strong>Body Battery:</strong> ${data.body_battery}</p>
       `;
-      new Chart(document.getElementById('stepsChart'), {
-        type: 'line',
-        data: data.stepsChart,
-        options: { responsive: true, scales: { y: { beginAtZero: true } } }
-      });
       const weeklyData = {
         labels: weekly.map(d => new Date(d.time).toLocaleDateString()),
         datasets: [{

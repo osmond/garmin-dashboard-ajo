@@ -11,10 +11,6 @@ describe('App', () => {
       resting_hr: 60,
       vo2max: 50,
       sleep_hours: 8,
-      intensity_minutes: 30,
-      training_load: 500,
-      body_battery: 80,
-      stepsChart: { labels: ['00:00'], datasets: [{ data: [100] }] },
     };
     const weekly = [{ time: '2024-01-01', steps: 100 }];
     global.fetch = vi.fn()
@@ -29,7 +25,7 @@ describe('App', () => {
         text: () => Promise.resolve('')
       });
     render(<App />);
-    await screen.findByText('500');
+    await screen.findByText('100');
   });
 
   it('shows error message if fetch fails', async () => {
