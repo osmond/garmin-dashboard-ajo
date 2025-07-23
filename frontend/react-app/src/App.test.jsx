@@ -11,12 +11,16 @@ describe('App', () => {
       resting_hr: 60,
       vo2max: 50,
       sleep_hours: 8,
+      intensity_minutes: 30,
+      training_load: 500,
+      body_battery: 80,
       stepsChart: { labels: ['00:00'], datasets: [{ data: [100] }] },
     };
-    global.fetch = vi.fn(() =>
-      Promise.resolve({ json: () => Promise.resolve(summary) })
-    );
+    const weekly = [{ time: '2024-01-01', steps: 100 }];
+    global.fetch = vi.fn()
+      .mockResolvedValueOnce({ json: () => Promise.resolve(summary) })
+      .mockResolvedValueOnce({ json: () => Promise.resolve(weekly) });
     render(<App />);
-    await screen.findByText('100');
+    await screen.findByText('500');
   });
 });
