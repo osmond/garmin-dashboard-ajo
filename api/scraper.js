@@ -88,7 +88,13 @@ async function fetchGarminSummary() {
   const steps = await gcClient.getSteps(today);
   const hr = await gcClient.getHeartRate(today);
   const sleep = await gcClient.getSleepData(today);
-  const stepsData = await getStepsData(today);
+  let stepsData;
+  try {
+    stepsData = await getStepsData(today);
+  } catch (err) {
+    console.warn('Failed to fetch steps data', err);
+    stepsData = null;
+  }
   const intensity = await getIntensityMinutes(today);
   const training = await getTrainingLoad(today);
   const battery = await getBodyBattery(today);
@@ -101,17 +107,26 @@ async function fetchGarminSummary() {
     intensity_minutes: intensity,
     training_load: training,
     body_battery: battery,
-    stepsChart: {
-      labels: stepsData.map(d => new Date(d.startGMT).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })),
-      datasets: [{
-        label: 'Steps',
-        data: stepsData.map(d => d.steps),
-        fill: true,
-        backgroundColor: 'rgba(0, 123, 255, 0.1)',
-        borderColor: 'rgba(0, 123, 255, 1)',
-        tension: 0.3,
-      }],
-    },
+    stepsChart: stepsData
+      ? {
+          labels: stepsData.map(d =>
+            new Date(d.startGMT).toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            })
+          ),
+          datasets: [
+            {
+              label: 'Steps',
+              data: stepsData.map(d => d.steps),
+              fill: true,
+              backgroundColor: 'rgba(0, 123, 255, 0.1)',
+              borderColor: 'rgba(0, 123, 255, 1)',
+              tension: 0.3,
+            },
+          ],
+        }
+      : null,
   };
 
   await writeToInflux(summary);
