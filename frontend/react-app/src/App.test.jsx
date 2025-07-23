@@ -12,7 +12,13 @@ describe('App', () => {
       vo2max: 50,
       sleep_hours: 8,
     };
-    const weekly = [{ time: '2024-01-01', steps: 100 }];
+    const weekly = [{
+      time: '2024-01-01',
+      steps: 100,
+      resting_hr: 60,
+      vo2max: 50,
+      sleep_hours: 8,
+    }];
     global.fetch = vi.fn()
       .mockResolvedValueOnce({
         ok: true,
@@ -26,6 +32,7 @@ describe('App', () => {
       });
     render(<App />);
     await screen.findByText('100');
+    await screen.findByText(/Insights/);
   });
 
   it('shows error message if fetch fails', async () => {

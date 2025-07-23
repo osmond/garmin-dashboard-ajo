@@ -6,6 +6,10 @@ body {
   padding: 2rem;
 }
 
+.dashboard {
+  display: flex;
+}
+
 .dashboard h1 {
   color: #4fc3f7;
 }
@@ -17,4 +21,9 @@ ul {
 
 .chart-container {
   max-width: 600px;
+}
+
+.insights {
+  margin-left: 2rem;
+  max-width: 300px;
 }
