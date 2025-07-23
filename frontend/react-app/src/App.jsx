@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import { Chart, LineElement, PointElement, LinearScale, CategoryScale, Filler } from 'chart.js'
+
+import RouteMap from './RouteMap.jsx'
+
 import InsightsPanel from './InsightsPanel'
+
 import './App.css'
 
 Chart.register(LineElement, PointElement, LinearScale, CategoryScale, Filler)
@@ -9,6 +13,8 @@ Chart.register(LineElement, PointElement, LinearScale, CategoryScale, Filler)
 function App() {
   const [summary, setSummary] = useState(null)
   const [weekly, setWeekly] = useState(null)
+  const [route, setRoute] = useState(null)
+  const [activityId, setActivityId] = useState('')
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -37,6 +43,17 @@ function App() {
         setError(err.message)
       })
   }, [])
+
+  function loadRoute() {
+    setRoute(null)
+    fetch(`/api/activity/${activityId}`)
+      .then(res => res.json())
+      .then(setRoute)
+      .catch(err => {
+        console.error(err)
+        setError(err.message)
+      })
+  }
 
   if (error) return <p role="alert">Error: {error}</p>
   if (!summary || !weekly) return <p>Loading...</p>
@@ -67,7 +84,21 @@ function App() {
           options={{ responsive: true, scales: { y: { beginAtZero: true } } }}
         />
       </div>
+
+
+      <div className="route-loader">
+        <input
+          value={activityId}
+          onChange={e => setActivityId(e.target.value)}
+          placeholder="Activity ID"
+        />
+        <button onClick={loadRoute}>Load Route</button>
+      </div>
+
+      <RouteMap points={route} />
+
       <InsightsPanel weekly={weekly} />
+
     </div>
   )
 }
