@@ -1,0 +1,16 @@
+{
+  "name": "garmin-dashboard-ajo",
+  "version": "1.0.0",
+  "description": "This project contains a simple Express API for fetching Garmin data and a frontend built with React and Vite.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}
