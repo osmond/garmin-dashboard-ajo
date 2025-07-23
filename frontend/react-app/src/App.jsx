@@ -48,16 +48,8 @@ function App() {
         <li><strong>Resting HR:</strong> {summary.resting_hr}</li>
         <li><strong>VO2 Max:</strong> {summary.vo2max}</li>
         <li><strong>Sleep:</strong> {summary.sleep_hours} hrs</li>
-        <li><strong>Intensity Minutes:</strong> {summary.intensity_minutes}</li>
-        <li><strong>Training Load:</strong> {summary.training_load}</li>
-        <li><strong>Body Battery:</strong> {summary.body_battery}</li>
       </ul>
-      <div className="chart-container">
-        <Line
-          data={summary.stepsChart}
-          options={{ responsive: true, scales: { y: { beginAtZero: true } } }}
-        />
-      </div>
+      
       <div className="chart-container">
         <Line
           data={{
