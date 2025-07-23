@@ -17,32 +17,20 @@ Husky is used to enforce this guideline. After installing dependencies, run
 
 ## Setup
 
-1. Login once using the `garmin-connect` CLI to generate a session JSON after completing MFA. Copy `.env.example` to `.env` and set `GARMIN_COOKIE_PATH` to that file. Add your InfluxDB connection details and optional `PORT` for the API (defaults to 3002).
+1. Generate a session file using the script:
+
+   ```bash
+   GARMIN_EMAIL=you@example.com \
+   GARMIN_PASSWORD=yourPassword \
+   node scripts/save-garmin-session.js ~/garmin_session.json
+   ```
+
+   Copy `.env.example` to `.env` and set `GARMIN_COOKIE_PATH` to that file. Add your InfluxDB details and optional `PORT` (defaults to 3002).
 2. Run `npm install` in the `api` folder.
 3. Start the API with `npm start` in the `api` folder.
 4. From `frontend/react-app`, run `npm install` then `npm run dev` to start the React app.
 5. Requests to `/api` from the React dev server are proxied to `http://localhost:3002`.
 6. The server schedules a daily Garmin sync at midnight and exposes `/api/weekly` for historical data.
-
-### Garmin Connect Login
-
-Install the CLI provided by the `garmin-connect` library:
-
-```bash
-npm install -g garmin-connect
-```
-
-Log in and save your session tokens:
-
-```bash
-npx garmin-connect login --session ~/garmin_session.json
-```
-
-Use that path in `.env`:
-
-```env
-GARMIN_COOKIE_PATH=/path/to/session.json
-```
 
 ## Running Tests
 
@@ -53,6 +41,7 @@ GARMIN_COOKIE_PATH=/path/to/session.json
 ### Required Environment Variables
 
 Set the following variable before starting the API:
+- `GARMIN_EMAIL` and `GARMIN_PASSWORD` credentials used by `save-garmin-session.js`
 
 - `GARMIN_COOKIE_PATH` path to the saved session JSON
 
