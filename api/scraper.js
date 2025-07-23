@@ -2,7 +2,10 @@
 const { GarminConnect } = require('garmin-connect');
 const { InfluxDB, Point } = require('@influxdata/influxdb-client');
 
-const gcClient = new GarminConnect();
+const gcClient = new GarminConnect({
+  username: process.env.GARMIN_EMAIL,
+  password: process.env.GARMIN_PASSWORD,
+});
 
 function ensureGarminCredentials() {
   if (!process.env.GARMIN_EMAIL) {
