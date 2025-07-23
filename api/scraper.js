@@ -4,6 +4,15 @@ const { InfluxDB, Point } = require('@influxdata/influxdb-client');
 
 const gcClient = new GarminConnect();
 
+function ensureGarminCredentials() {
+  if (!process.env.GARMIN_EMAIL) {
+    throw new Error('Missing GARMIN_EMAIL environment variable.');
+  }
+  if (!process.env.GARMIN_PASSWORD) {
+    throw new Error('Missing GARMIN_PASSWORD environment variable.');
+  }
+}
+
 function toDateString(date) {
   const offset = date.getTimezoneOffset();
   const offsetDate = new Date(date.getTime() - offset * 60 * 1000);
@@ -18,14 +27,8 @@ async function getStepsData(date) {
 }
 
 async function login() {
-  const { GARMIN_EMAIL, GARMIN_PASSWORD } = process.env;
-  if (!GARMIN_EMAIL) {
-    throw new Error('Missing GARMIN_EMAIL environment variable.');
-  }
-  if (!GARMIN_PASSWORD) {
-    throw new Error('Missing GARMIN_PASSWORD environment variable.');
-  }
-  await gcClient.login(GARMIN_EMAIL, GARMIN_PASSWORD);
+  ensureGarminCredentials();
+  await gcClient.login(process.env.GARMIN_EMAIL, process.env.GARMIN_PASSWORD);
 }
 
 async function writeToInflux(summary) {

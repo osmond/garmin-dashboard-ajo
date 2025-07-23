@@ -23,6 +23,15 @@ Husky is used to enforce this guideline. After installing dependencies, run
 4. From `frontend/react-app`, run `npm install` then `npm run dev` to start the React app.
 5. Requests to `/api` from the React dev server are proxied to `http://localhost:3002`.
 
+
+### Required Environment Variables
+
+Set the following variables with your Garmin credentials before starting the API:
+
+- `GARMIN_EMAIL`
+- `GARMIN_PASSWORD`
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
