@@ -49,3 +49,9 @@ ul {
 .compare-panel .selectors {
   margin-bottom: 1rem;
 }
+
+.route-loader input,
+.route-loader select {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
