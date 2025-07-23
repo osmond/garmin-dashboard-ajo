@@ -13,27 +13,45 @@
 <body>
   <h1>Garmin Dashboard</h1>
   <div id="summary"></div>
+  <canvas id="weeklyChart" class="chart-container"></canvas>
   <canvas id="stepsChart" class="chart-container"></canvas>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    fetch('/api/summary')
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('summary').innerHTML = `
-          <p><strong>Steps:</strong> ${data.steps}</p>
-          <p><strong>Resting HR:</strong> ${data.resting_hr}</p>
-          <p><strong>VO2 Max:</strong> ${data.vo2max}</p>
-          <p><strong>Sleep:</strong> ${data.sleep_hours} hrs</p>
-        `;
-        new Chart(document.getElementById('stepsChart'), {
-          type: 'line',
-          data: data.stepsChart,
-          options: {
-            responsive: true,
-            scales: { y: { beginAtZero: true } },
-          }
-        });
+    Promise.all([
+      fetch('/api/summary').then(r => r.json()),
+      fetch('/api/weekly').then(r => r.json())
+    ]).then(([data, weekly]) => {
+      document.getElementById('summary').innerHTML = `
+        <p><strong>Steps:</strong> ${data.steps}</p>
+        <p><strong>Resting HR:</strong> ${data.resting_hr}</p>
+        <p><strong>VO2 Max:</strong> ${data.vo2max}</p>
+        <p><strong>Sleep:</strong> ${data.sleep_hours} hrs</p>
+        <p><strong>Intensity Minutes:</strong> ${data.intensity_minutes}</p>
+        <p><strong>Training Load:</strong> ${data.training_load}</p>
+        <p><strong>Body Battery:</strong> ${data.body_battery}</p>
+      `;
+      new Chart(document.getElementById('stepsChart'), {
+        type: 'line',
+        data: data.stepsChart,
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
       });
+      const weeklyData = {
+        labels: weekly.map(d => new Date(d.time).toLocaleDateString()),
+        datasets: [{
+          label: 'Steps',
+          data: weekly.map(d => d.steps),
+          fill: true,
+          backgroundColor: 'rgba(40,167,69,0.1)',
+          borderColor: 'rgba(40,167,69,1)',
+          tension: 0.3
+        }]
+      };
+      new Chart(document.getElementById('weeklyChart'), {
+        type: 'line',
+        data: weeklyData,
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+      });
+    });
   </script>
 </body>
 </html>

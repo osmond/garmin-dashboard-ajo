@@ -1,6 +1,7 @@
 
 const express = require('express');
-const { fetchGarminSummary } = require('./scraper');
+const { fetchGarminSummary, fetchWeeklySummary } = require('./scraper');
+const cron = require('node-cron');
 require('dotenv').config();
 
 const app = express();
@@ -16,9 +17,22 @@ app.get('/api/summary', async (req, res) => {
   }
 });
 
+app.get('/api/weekly', async (req, res) => {
+  try {
+    const data = await fetchWeeklySummary();
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to query InfluxDB' });
+  }
+});
+
 if (require.main === module) {
   app.listen(port, () => {
     console.log(`API running at http://localhost:${port}`);
+  });
+  cron.schedule('0 0 * * *', () => {
+    fetchGarminSummary().catch(err => console.error(err));
   });
 }
 

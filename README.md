@@ -1,6 +1,6 @@
 # Garmin Dashboard Ajo
 
-This project contains a simple Express API for fetching Garmin data and a frontend built with React and Vite.
+This project contains a simple Express API for fetching Garmin data and a frontend built with React and Vite. The API stores daily metrics in InfluxDB, exposes a weekly history endpoint and runs a scheduled fetch each night.
 
 ## Commit Message Guidelines
 
@@ -22,6 +22,7 @@ Husky is used to enforce this guideline. After installing dependencies, run
 3. Start the API with `npm start` in the `api` folder.
 4. From `frontend/react-app`, run `npm install` then `npm run dev` to start the React app.
 5. Requests to `/api` from the React dev server are proxied to `http://localhost:3002`.
+6. The server schedules a daily Garmin sync at midnight and exposes `/api/weekly` for historical data.
 
 ## Running Tests
 
