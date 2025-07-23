@@ -27,3 +27,17 @@ ul {
   margin-left: 2rem;
   max-width: 300px;
 }
+
+.calendar-panel {
+  margin-right: 2rem;
+}
+
+.calendar-panel .has-data {
+  background: #4fc3f7;
+  color: #111;
+}
+
+.daily-summary {
+  list-style: none;
+  padding: 0;
+}

@@ -3,6 +3,7 @@ import App from './App';
 import { vi, describe, it, expect } from 'vitest';
 
 vi.mock('react-chartjs-2', () => ({ Line: () => <div>Chart</div> }));
+vi.mock('react-calendar', () => ({ default: () => <div>Calendar</div> }));
 
 describe('App', () => {
   it('renders data from API', async () => {
@@ -19,6 +20,7 @@ describe('App', () => {
       vo2max: 50,
       sleep_hours: 8,
     }];
+    const history = weekly
     global.fetch = vi.fn()
       .mockResolvedValueOnce({
         ok: true,
@@ -29,6 +31,11 @@ describe('App', () => {
         ok: true,
         json: () => Promise.resolve(weekly),
         text: () => Promise.resolve('')
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(history),
+        text: () => Promise.resolve('')
       });
     render(<App />);
     await screen.findByText('100');
@@ -38,6 +45,11 @@ describe('App', () => {
   it('shows error message if fetch fails', async () => {
     global.fetch = vi.fn()
       .mockRejectedValueOnce(new Error('fail'))
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([]),
+        text: () => Promise.resolve('')
+      })
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
