@@ -8,3 +8,4 @@ node_modules/
 # Session artifacts
 --session
 *-session.json
+.session
