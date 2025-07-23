@@ -83,4 +83,18 @@ describe('fetchGarminSummary', () => {
     process.env.GARMIN_COOKIE_PATH = '/no/such/file.json';
     await expect(fetchGarminSummary()).rejects.toThrow('Cookie file not found');
   });
+
+  it('sets stepsChart to null on error', async () => {
+    gcClient.client.get.mockReset();
+    gcClient.client.get
+      .mockRejectedValueOnce(new Error('fail'))
+      .mockResolvedValueOnce({ intensityMinutes: mockIntensity })
+      .mockResolvedValueOnce({ trainingLoad: mockTraining })
+      .mockResolvedValueOnce({ bodyBattery: mockBattery });
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const summary = await fetchGarminSummary();
+    expect(summary.stepsChart).toBeNull();
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
+  });
 });
