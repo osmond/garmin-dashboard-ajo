@@ -18,8 +18,16 @@ describe('App', () => {
     };
     const weekly = [{ time: '2024-01-01', steps: 100 }];
     global.fetch = vi.fn()
-      .mockResolvedValueOnce({ json: () => Promise.resolve(summary) })
-      .mockResolvedValueOnce({ json: () => Promise.resolve(weekly) });
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(summary),
+        text: () => Promise.resolve('')
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(weekly),
+        text: () => Promise.resolve('')
+      });
     render(<App />);
     await screen.findByText('500');
   });
