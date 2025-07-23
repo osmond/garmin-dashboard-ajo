@@ -13,7 +13,6 @@ let gcClient;
 
 jest.mock('garmin-connect', () => {
   const instance = {
-    login: jest.fn(),
     setSession: jest.fn(),
     getSteps: jest.fn().mockResolvedValue(mockSteps),
     getHeartRate: jest.fn().mockResolvedValue(mockHr),
@@ -39,13 +38,23 @@ jest.mock('garmin-connect', () => {
 
 describe('fetchGarminSummary', () => {
   beforeEach(() => {
-    process.env.GARMIN_EMAIL = 'e';
-    process.env.GARMIN_PASSWORD = 'p';
     delete process.env.INFLUX_URL;
     delete process.env.GARMIN_COOKIE_PATH;
     jest.resetModules();
     ({ fetchGarminSummary } = require('../scraper'));
     ({ instance: gcClient } = require('garmin-connect'));
+    const fs = require('fs');
+    const path = require('path');
+    const cookiePath = path.join(__dirname, 'session.json');
+    fs.writeFileSync(cookiePath, JSON.stringify({ oauth1: 'a', oauth2: 'b' }));
+    process.env.GARMIN_COOKIE_PATH = cookiePath;
+  });
+
+  afterEach(() => {
+    const fs = require('fs');
+    if (process.env.GARMIN_COOKIE_PATH && fs.existsSync(process.env.GARMIN_COOKIE_PATH)) {
+      fs.unlinkSync(process.env.GARMIN_COOKIE_PATH);
+    }
   });
 
   it('returns formatted summary', async () => {
@@ -61,23 +70,12 @@ describe('fetchGarminSummary', () => {
   });
 
   it('uses cookie file when present', async () => {
-    const fs = require('fs');
-    const path = require('path');
-    const cookiePath = path.join(__dirname, 'session.json');
-    fs.writeFileSync(cookiePath, JSON.stringify({ oauth1: 'a', oauth2: 'b' }));
-    process.env.GARMIN_COOKIE_PATH = cookiePath;
-
     await fetchGarminSummary();
-
     expect(gcClient.setSession).toHaveBeenCalledWith({ oauth1: 'a', oauth2: 'b' });
-    expect(gcClient.login).not.toHaveBeenCalled();
-
-    fs.unlinkSync(cookiePath);
   });
 
-  it('falls back to login when cookie missing', async () => {
+  it('throws when cookie missing', async () => {
     process.env.GARMIN_COOKIE_PATH = '/no/such/file.json';
-    await fetchGarminSummary();
-    expect(gcClient.login).toHaveBeenCalled();
+    await expect(fetchGarminSummary()).rejects.toThrow('Cookie file not found');
   });
 });
