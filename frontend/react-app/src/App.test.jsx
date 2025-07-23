@@ -1,12 +1,13 @@
+/* global global */
 import { render, screen } from '@testing-library/react';
 import App from './App';
-import { vi, describe, it, expect } from 'vitest';
+import { vi as viFn, describe, it, expect } from 'vitest';
 
-vi.mock('react-chartjs-2', () => ({ Line: () => <div>Chart</div> }));
+viFn.mock('react-chartjs-2', () => ({ Line: () => <div>Chart</div> }));
 
-vi.mock('react-calendar', () => ({ default: () => <div>Calendar</div> }));
+viFn.mock('react-calendar', () => ({ default: () => <div>Calendar</div> }));
 
-vi.mock('react-leaflet', () => ({
+viFn.mock('react-leaflet', () => ({
   MapContainer: ({ children }) => <div>{children}</div>,
   TileLayer: () => <div>Tile</div>,
   Polyline: () => <div>Line</div>,
@@ -29,7 +30,7 @@ describe('App', () => {
       sleep_hours: 8,
     }];
     const history = weekly
-    global.fetch = vi.fn()
+    global.fetch = viFn.fn()
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(summary),
@@ -57,7 +58,7 @@ describe('App', () => {
   });
 
   it('shows error message if fetch fails', async () => {
-    global.fetch = vi.fn()
+    global.fetch = viFn.fn()
       .mockRejectedValueOnce(new Error('fail'))
       .mockResolvedValueOnce({
         ok: true,

@@ -8,6 +8,7 @@ import InsightsPanel from './InsightsPanel'
 import ComparePanel from './ComparePanel'
 
 import CalendarPanel from './CalendarPanel'
+import { Button } from './components/ui/button'
 
 
 import './App.css'
@@ -134,7 +135,7 @@ function App() {
             placeholder="Activity ID"
           />
         )}
-        <button onClick={loadRoute}>Load Route</button>
+        <Button onClick={loadRoute}>Load Route</Button>
       </div>
 
       <RouteMap points={route} />
