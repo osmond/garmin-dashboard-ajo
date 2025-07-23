@@ -1,0 +1,39 @@
+const mockSteps = 1234;
+const mockHr = { restingHeartRate: 60, vo2max: 50 };
+const mockSleep = { dailySleepDTO: { sleepTimeSeconds: 28800 } };
+const mockStepsData = [
+  { startGMT: new Date('2024-01-01T00:00:00Z').toISOString(), steps: 100 },
+];
+
+jest.mock('garmin-connect', () => {
+  const gcClient = {
+    login: jest.fn(),
+    getSteps: jest.fn().mockResolvedValue(mockSteps),
+    getHeartRate: jest.fn().mockResolvedValue(mockHr),
+    getSleepData: jest.fn().mockResolvedValue(mockSleep),
+    getUserProfile: jest.fn().mockResolvedValue({ displayName: 'user' }),
+    client: { get: jest.fn().mockResolvedValue(mockStepsData) },
+    url: { GC_API: 'http://mock' },
+  };
+  return { GarminConnect: jest.fn(() => gcClient) };
+});
+
+const { fetchGarminSummary } = require('../scraper');
+
+describe('fetchGarminSummary', () => {
+  beforeEach(() => {
+    process.env.GARMIN_EMAIL = 'e';
+    process.env.GARMIN_PASSWORD = 'p';
+    delete process.env.INFLUX_URL;
+    jest.resetModules();
+  });
+
+  it('returns formatted summary', async () => {
+    const summary = await fetchGarminSummary();
+    expect(summary).toHaveProperty('steps', mockSteps);
+    expect(summary).toHaveProperty('resting_hr', mockHr.restingHeartRate);
+    expect(summary).toHaveProperty('vo2max', mockHr.vo2max);
+    expect(summary).toHaveProperty('sleep_hours', 8);
+    expect(summary.stepsChart.datasets[0].data[0]).toBe(100);
+  });
+});

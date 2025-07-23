@@ -23,6 +23,11 @@ Husky is used to enforce this guideline. After installing dependencies, run
 4. From `frontend/react-app`, run `npm install` then `npm run dev` to start the React app.
 5. Requests to `/api` from the React dev server are proxied to `http://localhost:3002`.
 
+## Running Tests
+
+1. Install dependencies in both the `api` and `frontend/react-app` folders.
+2. Execute `npm test` from the repository root to run Jest for the API and Vitest for the frontend.
+
 
 ### Required Environment Variables
 
@@ -34,4 +39,5 @@ Set the following variables with your Garmin credentials before starting the API
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
 

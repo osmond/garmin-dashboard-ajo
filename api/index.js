@@ -16,6 +16,10 @@ app.get('/api/summary', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`API running at http://localhost:${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`API running at http://localhost:${port}`);
+  });
+}
+
+module.exports = app;
