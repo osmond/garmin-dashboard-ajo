@@ -14,14 +14,14 @@ function toDateString(date) {
 async function getStepsData(date) {
   const profile = await gcClient.getUserProfile();
   const dateString = toDateString(date);
-  const url = `${gcClient.url.GC_API}/wellness-service/wellness/dailySummaryChart/${profile.displayName}`;
+  const url = `${gcClient.url.GC_API}/wellness-service/wellness/dailySummaryChart/${profile.userId}`;
   return gcClient.client.get(url, { params: { date: dateString } });
 }
 
 async function getIntensityMinutes(date) {
   const profile = await gcClient.getUserProfile();
   const dateString = toDateString(date);
-  const url = `${gcClient.url.GC_API}/wellness-service/wellness/dailyIntensityMinutes/${profile.displayName}`;
+  const url = `${gcClient.url.GC_API}/wellness-service/wellness/dailyIntensityMinutes/${profile.userId}`;
   const data = await gcClient.client.get(url, { params: { date: dateString } });
   return data.intensityMinutes || 0;
 }
@@ -36,7 +36,7 @@ async function getTrainingLoad(date) {
 async function getBodyBattery(date) {
   const profile = await gcClient.getUserProfile();
   const dateString = toDateString(date);
-  const url = `${gcClient.url.GC_API}/wellness-service/wellness/bodyBattery/${profile.displayName}`;
+  const url = `${gcClient.url.GC_API}/wellness-service/wellness/bodyBattery/${profile.userId}`;
   const data = await gcClient.client.get(url, { params: { date: dateString } });
   return data.bodyBattery || 0;
 }

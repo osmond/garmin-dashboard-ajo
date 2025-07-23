@@ -20,7 +20,7 @@ jest.mock('garmin-connect', () => {
     getIntensityMinutes: jest.fn().mockResolvedValue(mockIntensity),
     getTrainingLoad: jest.fn().mockResolvedValue(mockTraining),
     getBodyBattery: jest.fn().mockResolvedValue(mockBattery),
-    getUserProfile: jest.fn().mockResolvedValue({ displayName: 'user' }),
+    getUserProfile: jest.fn().mockResolvedValue({ userId: 'user' }),
     client: {
       get: jest
         .fn()
