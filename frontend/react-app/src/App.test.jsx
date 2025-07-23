@@ -44,6 +44,11 @@ describe('App', () => {
         ok: true,
         json: () => Promise.resolve(history),
         text: () => Promise.resolve('')
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([{ id: '1', name: 'Run' }]),
+        text: () => Promise.resolve('')
       });
     render(<App />);
     await screen.findByText('100');
@@ -53,6 +58,11 @@ describe('App', () => {
   it('shows error message if fetch fails', async () => {
     global.fetch = vi.fn()
       .mockRejectedValueOnce(new Error('fail'))
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([]),
+        text: () => Promise.resolve('')
+      })
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),

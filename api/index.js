@@ -1,19 +1,15 @@
-
 const path = require('path');
-// Load environment variables from the repo root .env file so running the API
-// from the api/ directory works as documented.
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const express = require('express');
-
-const { fetchGarminSummary, fetchWeeklySummary, fetchHistory } = require('./scraper');
+const cron = require('node-cron');
 
 const {
   fetchGarminSummary,
   fetchWeeklySummary,
+  fetchHistory,
   fetchActivityRoute,
+  fetchRecentActivities,
 } = require('./scraper');
-
-const cron = require('node-cron');
 
 const app = express();
 const port = process.env.PORT || 3002;
@@ -46,7 +42,6 @@ app.get('/api/weekly', async (req, res) => {
   }
 });
 
-
 app.get('/api/history', async (req, res) => {
   const days = parseInt(req.query.days) || 7;
   try {
@@ -55,6 +50,18 @@ app.get('/api/history', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to query InfluxDB' });
+  }
+});
+
+app.get('/api/activities', async (req, res) => {
+  try {
+    const acts = await fetchRecentActivities();
+    res.json(acts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch activities' });
+  }
+});
 
 app.get('/api/activity/:id', async (req, res) => {
   try {
@@ -63,11 +70,9 @@ app.get('/api/activity/:id', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch activity' });
-
   }
 });
 
-// Catch-all handler for unknown routes
 app.use((req, res) => res.status(404).json({ error: 'Not found' }));
 
 if (require.main === module) {
