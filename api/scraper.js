@@ -61,14 +61,14 @@ async function fetchGarminSummary() {
   return summary;
 }
 
-async function fetchWeeklySummary() {
+async function fetchHistory(days = 7) {
   if (!process.env.INFLUX_URL || !process.env.INFLUX_TOKEN || !process.env.INFLUX_ORG || !process.env.INFLUX_BUCKET) {
     return [];
   }
   const influx = new InfluxDB({ url: process.env.INFLUX_URL, token: process.env.INFLUX_TOKEN });
   const queryApi = influx.getQueryApi(process.env.INFLUX_ORG);
   const query = `from(bucket: "${process.env.INFLUX_BUCKET}")
-    |> range(start: -7d)
+    |> range(start: -${days}d)
     |> filter(fn: (r) => r._measurement == "garmin_summary")
     |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")`;
   const results = [];
@@ -84,6 +84,13 @@ async function fetchWeeklySummary() {
   });
   return results;
 }
+
+
+async function fetchWeeklySummary() {
+  return fetchHistory(7);
+}
+
+module.exports = { fetchGarminSummary, fetchWeeklySummary, fetchHistory };
 
 async function fetchActivityRoute(activityId) {
   await login();
@@ -102,3 +109,4 @@ async function fetchActivityRoute(activityId) {
 }
 
 module.exports = { fetchGarminSummary, fetchWeeklySummary, fetchActivityRoute };
+
