@@ -23,8 +23,10 @@ function App() {
 
   const [route, setRoute] = useState(null)
   const [activities, setActivities] = useState([])
+  const [activitiesLoading, setActivitiesLoading] = useState(true)
   const [activityId, setActivityId] = useState('')
-  const [activityLimit] = useState(20)
+  const [activityLimit, setActivityLimit] = useState(20)
+  const [search, setSearch] = useState('')
 
   const [error, setError] = useState(null)
 
@@ -65,6 +67,7 @@ function App() {
         console.error(err)
         setError(err.message)
       })
+    setActivitiesLoading(true)
     fetch(`/api/activities?limit=${activityLimit}`)
       .then(res => res.json())
       .then(data => {
@@ -75,11 +78,12 @@ function App() {
         console.error(err)
         setError(err.message)
       })
-  }, [])
+      .finally(() => setActivitiesLoading(false))
+  }, [activityLimit])
 
-  function loadRoute() {
+  function loadRoute(id = activityId) {
     setRoute(null)
-    fetch(`/api/activity/${activityId}`)
+    fetch(`/api/activity/${id}`)
       .then(res => res.json())
       .then(setRoute)
       .catch(err => {
@@ -90,6 +94,9 @@ function App() {
 
   if (error) return <p role="alert">Error: {error}</p>
   if (!summary || !weekly || !history) return <p>Loading...</p>
+  const filteredActivities = activities.filter(a =>
+    a.name.toLowerCase().includes(search.toLowerCase())
+  )
 
   return (
     <div className="dashboard">
@@ -123,14 +130,42 @@ function App() {
 
 
       <div className="route-loader">
-        {activities.length ? (
-          <select value={activityId} onChange={e => setActivityId(e.target.value)}>
-            {activities.map(a => (
-              <option key={a.id} value={a.id}>
-                {a.name} - {a.date ? new Date(a.date).toLocaleDateString() : ''}
-              </option>
-            ))}
-          </select>
+        {activitiesLoading ? (
+          <p>Loading activities...</p>
+        ) : activities.length ? (
+          <>
+            <input
+              type="number"
+              min="1"
+              value={activityLimit}
+              onChange={e => setActivityLimit(Number(e.target.value))}
+            />
+            <input
+              type="text"
+              placeholder="Search"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+            {filteredActivities.length ? (
+              <select
+                value={activityId}
+                onChange={e => {
+                  const id = e.target.value
+                  setActivityId(id)
+                  loadRoute(id)
+                }}
+              >
+                {filteredActivities.map(a => (
+                  <option key={a.id} value={a.id}>
+                    {a.name} -
+                    {a.date ? ` ${new Date(a.date).toLocaleDateString()}` : ''}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <p>No matches</p>
+            )}
+          </>
         ) : (
           <input
             value={activityId}
