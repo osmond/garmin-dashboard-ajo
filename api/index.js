@@ -27,6 +27,9 @@ app.get('/api/weekly', async (req, res) => {
   }
 });
 
+// Catch-all handler for unknown routes
+app.use((req, res) => res.status(404).json({ error: 'Not found' }));
+
 if (require.main === module) {
   app.listen(port, () => {
     console.log(`API running at http://localhost:${port}`);

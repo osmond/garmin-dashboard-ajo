@@ -41,3 +41,11 @@ describe('GET /api/weekly', () => {
     expect(res.body).toEqual({ error: 'Failed to query InfluxDB' });
   });
 });
+
+describe('Unknown routes', () => {
+  it('responds with 404', async () => {
+    const res = await request(app).get('/does/not/exist');
+    expect(res.status).toBe(404);
+    expect(res.body).toEqual({ error: 'Not found' });
+  });
+});
