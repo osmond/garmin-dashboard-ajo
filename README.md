@@ -17,7 +17,7 @@ Husky is used to enforce this guideline. After installing dependencies, run
 
 ## Setup
 
-1. Generate a session file using the script:
+1. Create a Garmin Connect session file:
 
    ```bash
    GARMIN_EMAIL=you@example.com \
@@ -25,12 +25,33 @@ Husky is used to enforce this guideline. After installing dependencies, run
    node scripts/save-garmin-session.js ~/garmin_session.json
    ```
 
-   Copy `.env.example` to `.env` and set `GARMIN_COOKIE_PATH` to that file. Add your InfluxDB details and optional `PORT` (defaults to 3002).
-2. Run `npm install` in the `api` folder.
-3. Start the API with `npm start` in the `api` folder.
-4. From `frontend/react-app`, run `npm install` then `npm run dev` to start the React app.
-5. Requests to `/api` from the React dev server are proxied to `http://localhost:3002`.
-6. The server schedules a daily Garmin sync at midnight and exposes `/api/weekly` for historical data.
+   The script logs in and saves your cookies at `~/garmin_session.json`.
+
+2. Copy the environment template and edit it:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Open `.env` and set `GARMIN_COOKIE_PATH` to the session file path. Fill in the InfluxDB variables and adjust `PORT` if needed (defaults to `3002`).
+
+3. Install API dependencies and start the server:
+
+   ```bash
+   cd api
+   npm install
+   npm start
+   ```
+
+4. In another terminal start the React app:
+
+   ```bash
+   cd frontend/react-app
+   npm install
+   npm run dev
+   ```
+
+5. Vite proxies `/api` requests to `http://localhost:3002` and the server schedules a Garmin sync each midnight. Historical data is available at `/api/weekly`.
 
 ## Running Tests
 
