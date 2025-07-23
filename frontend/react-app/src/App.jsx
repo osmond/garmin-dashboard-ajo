@@ -27,7 +27,10 @@ function App() {
         <li><strong>Sleep:</strong> {summary.sleep_hours} hrs</li>
       </ul>
       <div className="chart-container">
-        <Line data={summary.stepsChart} options={{ responsive: true }} />
+        <Line
+          data={summary.stepsChart}
+          options={{ responsive: true, scales: { y: { beginAtZero: true } } }}
+        />
       </div>
     </div>
   )

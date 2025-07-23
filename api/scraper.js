@@ -4,6 +4,19 @@ const { InfluxDB, Point } = require('@influxdata/influxdb-client');
 
 const gcClient = new GarminConnect();
 
+function toDateString(date) {
+  const offset = date.getTimezoneOffset();
+  const offsetDate = new Date(date.getTime() - offset * 60 * 1000);
+  return offsetDate.toISOString().split('T')[0];
+}
+
+async function getStepsData(date) {
+  const profile = await gcClient.getUserProfile();
+  const dateString = toDateString(date);
+  const url = `${gcClient.url.GC_API}/wellness-service/wellness/dailySummaryChart/${profile.displayName}`;
+  return gcClient.client.get(url, { params: { date: dateString } });
+}
+
 async function login() {
   await gcClient.login(process.env.GARMIN_EMAIL, process.env.GARMIN_PASSWORD);
 }
@@ -29,6 +42,7 @@ async function fetchGarminSummary() {
   const steps = await gcClient.getSteps(today);
   const hr = await gcClient.getHeartRate(today);
   const sleep = await gcClient.getSleepData(today);
+  const stepsData = await getStepsData(today);
 
   const summary = {
     steps,
@@ -36,10 +50,10 @@ async function fetchGarminSummary() {
     vo2max: hr.vo2max || 0,
     sleep_hours: (sleep.dailySleepDTO.sleepTimeSeconds || 0) / 3600,
     stepsChart: {
-      labels: [],
+      labels: stepsData.map(d => new Date(d.startGMT).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })),
       datasets: [{
         label: 'Steps',
-        data: [],
+        data: stepsData.map(d => d.steps),
         fill: true,
         backgroundColor: 'rgba(0, 123, 255, 0.1)',
         borderColor: 'rgba(0, 123, 255, 1)',
