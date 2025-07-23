@@ -6,6 +6,7 @@ const mockStepsData = [
 ];
 
 let fetchGarminSummary;
+let fetchActivityRoute;
 let gcClient;
 
 jest.mock('garmin-connect', () => {
@@ -14,6 +15,8 @@ jest.mock('garmin-connect', () => {
     getSteps: jest.fn().mockResolvedValue(mockSteps),
     getHeartRate: jest.fn().mockResolvedValue(mockHr),
     getSleepData: jest.fn().mockResolvedValue(mockSleep),
+    client: { get: jest.fn() },
+    url: { DOWNLOAD_GPX: 'gpx/' },
   };
   return { GarminConnect: jest.fn(() => instance), instance };
 });
@@ -25,7 +28,7 @@ describe('fetchGarminSummary', () => {
     delete process.env.INFLUX_URL;
     delete process.env.GARMIN_COOKIE_PATH;
     jest.resetModules();
-    ({ fetchGarminSummary } = require('../scraper'));
+    ({ fetchGarminSummary, fetchActivityRoute } = require('../scraper'));
     ({ instance: gcClient } = require('garmin-connect'));
     const fs = require('fs');
     const path = require('path');
@@ -62,5 +65,36 @@ describe('fetchGarminSummary', () => {
   it('throws when cookie missing', async () => {
     process.env.GARMIN_COOKIE_PATH = '/no/such/file.json';
     await expect(fetchGarminSummary()).rejects.toThrow('Cookie file not found');
+  });
+});
+
+describe('fetchActivityRoute', () => {
+  beforeEach(async () => {
+    const fs = require('fs');
+    const path = require('path');
+    const cookiePath = path.join(__dirname, 'session.json');
+    await fs.promises.writeFile(
+      cookiePath,
+      JSON.stringify({ oauth1: 'a', oauth2: 'b' })
+    );
+    process.env.GARMIN_COOKIE_PATH = cookiePath;
+    gcClient.client.get.mockResolvedValue(
+      '<gpx><trk><trkseg><trkpt lat="1" lon="2" /></trkseg></trk></gpx>'
+    );
+  });
+
+  afterEach(async () => {
+    const fs = require('fs');
+    const path = require('path');
+    const cookiePath = path.join(__dirname, 'session.json');
+    try {
+      await fs.promises.unlink(cookiePath);
+    } catch {}
+  });
+
+  it('parses gpx data', async () => {
+    const points = await fetchActivityRoute('123');
+    expect(points).toEqual([{ lat: 1, lon: 2 }]);
+    expect(gcClient.client.get).toHaveBeenCalledWith('gpx/123');
   });
 });

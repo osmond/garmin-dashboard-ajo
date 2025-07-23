@@ -3,6 +3,11 @@ import App from './App';
 import { vi, describe, it, expect } from 'vitest';
 
 vi.mock('react-chartjs-2', () => ({ Line: () => <div>Chart</div> }));
+vi.mock('react-leaflet', () => ({
+  MapContainer: ({ children }) => <div>{children}</div>,
+  TileLayer: () => <div>Tile</div>,
+  Polyline: () => <div>Line</div>,
+}));
 
 describe('App', () => {
   it('renders data from API', async () => {
