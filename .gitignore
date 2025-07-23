@@ -4,3 +4,7 @@ node_modules/
 
 .DS_Store
 .garminconnect/
+
+# Session artifacts
+--session
+*-session.json
