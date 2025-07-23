@@ -1,5 +1,8 @@
 
-require('dotenv').config();
+const path = require('path');
+// Load environment variables from the repo root .env file so running the API
+// from the api/ directory works as documented.
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const express = require('express');
 const { fetchGarminSummary, fetchWeeklySummary } = require('./scraper');
 const cron = require('node-cron');
