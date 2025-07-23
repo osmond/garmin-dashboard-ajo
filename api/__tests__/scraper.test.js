@@ -8,9 +8,13 @@ const mockIntensity = 30;
 const mockTraining = 500;
 const mockBattery = 75;
 
+let fetchGarminSummary;
+let gcClient;
+
 jest.mock('garmin-connect', () => {
-  const gcClient = {
+  const instance = {
     login: jest.fn(),
+    setSession: jest.fn(),
     getSteps: jest.fn().mockResolvedValue(mockSteps),
     getHeartRate: jest.fn().mockResolvedValue(mockHr),
     getSleepData: jest.fn().mockResolvedValue(mockSleep),
@@ -28,17 +32,20 @@ jest.mock('garmin-connect', () => {
     },
     url: { GC_API: 'http://mock' },
   };
-  return { GarminConnect: jest.fn(() => gcClient) };
+  return { GarminConnect: jest.fn(() => instance), instance };
 });
 
-const { fetchGarminSummary } = require('../scraper');
+
 
 describe('fetchGarminSummary', () => {
   beforeEach(() => {
     process.env.GARMIN_EMAIL = 'e';
     process.env.GARMIN_PASSWORD = 'p';
     delete process.env.INFLUX_URL;
+    delete process.env.GARMIN_COOKIE_PATH;
     jest.resetModules();
+    ({ fetchGarminSummary } = require('../scraper'));
+    ({ instance: gcClient } = require('garmin-connect'));
   });
 
   it('returns formatted summary', async () => {
@@ -51,5 +58,26 @@ describe('fetchGarminSummary', () => {
     expect(summary).toHaveProperty('training_load', mockTraining);
     expect(summary).toHaveProperty('body_battery', mockBattery);
     expect(summary.stepsChart.datasets[0].data[0]).toBe(100);
+  });
+
+  it('uses cookie file when present', async () => {
+    const fs = require('fs');
+    const path = require('path');
+    const cookiePath = path.join(__dirname, 'session.json');
+    fs.writeFileSync(cookiePath, JSON.stringify({ oauth1: 'a', oauth2: 'b' }));
+    process.env.GARMIN_COOKIE_PATH = cookiePath;
+
+    await fetchGarminSummary();
+
+    expect(gcClient.setSession).toHaveBeenCalledWith({ oauth1: 'a', oauth2: 'b' });
+    expect(gcClient.login).not.toHaveBeenCalled();
+
+    fs.unlinkSync(cookiePath);
+  });
+
+  it('falls back to login when cookie missing', async () => {
+    process.env.GARMIN_COOKIE_PATH = '/no/such/file.json';
+    await fetchGarminSummary();
+    expect(gcClient.login).toHaveBeenCalled();
   });
 });
