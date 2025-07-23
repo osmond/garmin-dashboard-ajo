@@ -27,3 +27,17 @@ Husky is used to enforce this guideline. After installing dependencies, run
 
 1. Install dependencies in both the `api` and `frontend/react-app` folders.
 2. Execute `npm test` from the repository root to run Jest for the API and Vitest for the frontend.
+
+
+### Required Environment Variables
+
+Set the following variables with your Garmin credentials before starting the API:
+
+- `GARMIN_EMAIL`
+- `GARMIN_PASSWORD`
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+
