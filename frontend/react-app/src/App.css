@@ -41,3 +41,11 @@ ul {
   list-style: none;
   padding: 0;
 }
+
+.compare-panel {
+  margin-top: 2rem;
+}
+
+.compare-panel .selectors {
+  margin-bottom: 1rem;
+}

@@ -53,6 +53,7 @@ describe('App', () => {
     render(<App />);
     await screen.findByText('100');
     await screen.findByText(/Insights/);
+    await screen.findByText(/Compare Metrics/);
   });
 
   it('shows error message if fetch fails', async () => {
