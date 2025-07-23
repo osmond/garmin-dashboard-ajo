@@ -9,6 +9,12 @@ Write commit messages in the present-tense imperative, describing what the commi
 - "Add port configuration"
 - "Fix login redirect logic"
 
+### Commit Message Enforcement
+
+Husky is used to enforce this guideline. After installing dependencies, run
+`npm run prepare` to install the Git hooks. Commits with messages longer than
+60 characters or using past tense will be rejected by the `commit-msg` hook.
+
 ## Setup
 
 1. Copy `.env.example` to `.env` and fill in your Garmin credentials, InfluxDB connection details, and optional `PORT` for the API (defaults to 3002).
