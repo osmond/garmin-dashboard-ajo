@@ -37,7 +37,7 @@ jest.mock('garmin-connect', () => {
 
 
 describe('fetchGarminSummary', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     delete process.env.INFLUX_URL;
     delete process.env.GARMIN_COOKIE_PATH;
     jest.resetModules();
@@ -46,15 +46,20 @@ describe('fetchGarminSummary', () => {
     const fs = require('fs');
     const path = require('path');
     const cookiePath = path.join(__dirname, 'session.json');
-    fs.writeFileSync(cookiePath, JSON.stringify({ oauth1: 'a', oauth2: 'b' }));
+    await fs.promises.writeFile(
+      cookiePath,
+      JSON.stringify({ oauth1: 'a', oauth2: 'b' })
+    );
     process.env.GARMIN_COOKIE_PATH = cookiePath;
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     const fs = require('fs');
-    if (process.env.GARMIN_COOKIE_PATH && fs.existsSync(process.env.GARMIN_COOKIE_PATH)) {
-      fs.unlinkSync(process.env.GARMIN_COOKIE_PATH);
-    }
+    const path = require('path');
+    const cookiePath = path.join(__dirname, 'session.json');
+    try {
+      await fs.promises.unlink(cookiePath);
+    } catch {}
   });
 
   it('returns formatted summary', async () => {

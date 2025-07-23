@@ -45,14 +45,18 @@ async function login() {
   if (!process.env.GARMIN_COOKIE_PATH) {
     throw new Error('GARMIN_COOKIE_PATH is required');
   }
-  if (!fs.existsSync(process.env.GARMIN_COOKIE_PATH)) {
+  try {
+    await fs.promises.access(process.env.GARMIN_COOKIE_PATH);
+  } catch {
     throw new Error(
       `Cookie file not found: ${process.env.GARMIN_COOKIE_PATH}`
     );
   }
-  const data = JSON.parse(
-    fs.readFileSync(process.env.GARMIN_COOKIE_PATH, 'utf8')
+  const file = await fs.promises.readFile(
+    process.env.GARMIN_COOKIE_PATH,
+    'utf8'
   );
+  const data = JSON.parse(file);
   if (typeof gcClient.setSession === 'function') {
     gcClient.setSession(data);
   } else if (typeof gcClient.loadToken === 'function') {
