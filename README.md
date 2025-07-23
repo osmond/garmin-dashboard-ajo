@@ -17,7 +17,7 @@ Husky is used to enforce this guideline. After installing dependencies, run
 
 ## Setup
 
-1. Copy `.env.example` to `.env` and fill in `GARMIN_EMAIL` and `GARMIN_PASSWORD` with your Garmin credentials. Add your InfluxDB connection details and optional `PORT` for the API (defaults to 3002). You can also set `GARMIN_COOKIE_PATH` to reuse a saved Garmin session instead of logging in each time.
+1. Login once using the `garmin-connect` CLI to generate a session JSON after completing MFA. Copy `.env.example` to `.env` and set `GARMIN_COOKIE_PATH` to that file. Add your InfluxDB connection details and optional `PORT` for the API (defaults to 3002).
 2. Run `npm install` in the `api` folder.
 3. Start the API with `npm start` in the `api` folder.
 4. From `frontend/react-app`, run `npm install` then `npm run dev` to start the React app.
@@ -32,11 +32,9 @@ Husky is used to enforce this guideline. After installing dependencies, run
 
 ### Required Environment Variables
 
-Set the following variables with your Garmin credentials before starting the API:
+Set the following variable before starting the API:
 
-- `GARMIN_EMAIL`
-- `GARMIN_PASSWORD`
-- `GARMIN_COOKIE_PATH` (optional path to a saved session JSON)
+- `GARMIN_COOKIE_PATH` path to the saved session JSON
 
 ## License
 

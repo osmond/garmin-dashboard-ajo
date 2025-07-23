@@ -3,19 +3,7 @@ const { GarminConnect } = require('garmin-connect');
 const { InfluxDB, Point } = require('@influxdata/influxdb-client');
 const fs = require('fs');
 
-const gcClient = new GarminConnect({
-  username: process.env.GARMIN_EMAIL,
-  password: process.env.GARMIN_PASSWORD,
-});
-
-function ensureGarminCredentials() {
-  if (!process.env.GARMIN_EMAIL) {
-    throw new Error('Missing GARMIN_EMAIL environment variable.');
-  }
-  if (!process.env.GARMIN_PASSWORD) {
-    throw new Error('Missing GARMIN_PASSWORD environment variable.');
-  }
-}
+const gcClient = new GarminConnect({ username: '', password: '' });
 
 function toDateString(date) {
   const offset = date.getTimezoneOffset();
@@ -54,25 +42,22 @@ async function getBodyBattery(date) {
 }
 
 async function login() {
-  if (
-    process.env.GARMIN_COOKIE_PATH &&
-    fs.existsSync(process.env.GARMIN_COOKIE_PATH)
-  ) {
-    const data = JSON.parse(
-      fs.readFileSync(process.env.GARMIN_COOKIE_PATH, 'utf8')
-    );
-    if (typeof gcClient.setSession === 'function') {
-      gcClient.setSession(data);
-      return;
-    }
-    if (typeof gcClient.loadToken === 'function') {
-      gcClient.loadToken(data.oauth1, data.oauth2);
-      return;
-    }
+  if (!process.env.GARMIN_COOKIE_PATH) {
+    throw new Error('GARMIN_COOKIE_PATH is required');
   }
-
-  ensureGarminCredentials();
-  await gcClient.login(process.env.GARMIN_EMAIL, process.env.GARMIN_PASSWORD);
+  if (!fs.existsSync(process.env.GARMIN_COOKIE_PATH)) {
+    throw new Error(
+      `Cookie file not found: ${process.env.GARMIN_COOKIE_PATH}`
+    );
+  }
+  const data = JSON.parse(
+    fs.readFileSync(process.env.GARMIN_COOKIE_PATH, 'utf8')
+  );
+  if (typeof gcClient.setSession === 'function') {
+    gcClient.setSession(data);
+  } else if (typeof gcClient.loadToken === 'function') {
+    gcClient.loadToken(data.oauth1, data.oauth2);
+  }
 }
 
 async function writeToInflux(summary) {
