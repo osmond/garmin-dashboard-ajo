@@ -24,6 +24,26 @@ Husky is used to enforce this guideline. After installing dependencies, run
 5. Requests to `/api` from the React dev server are proxied to `http://localhost:3002`.
 6. The server schedules a daily Garmin sync at midnight and exposes `/api/weekly` for historical data.
 
+### Garmin Connect Login
+
+Install the CLI provided by the `garmin-connect` library:
+
+```bash
+npm install -g garmin-connect
+```
+
+Log in and save your session tokens:
+
+```bash
+npx garmin-connect login --session ~/garmin_session.json
+```
+
+Use that path in `.env`:
+
+```env
+GARMIN_COOKIE_PATH=/path/to/session.json
+```
+
 ## Running Tests
 
 1. Install dependencies in both the `api` and `frontend/react-app` folders.
