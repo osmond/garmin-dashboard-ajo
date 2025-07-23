@@ -31,4 +31,18 @@ describe('App', () => {
     render(<App />);
     await screen.findByText('500');
   });
+
+  it('shows error message if fetch fails', async () => {
+    global.fetch = vi.fn()
+      .mockRejectedValueOnce(new Error('fail'))
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([]),
+        text: () => Promise.resolve('')
+      })
+
+    render(<App />)
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveTextContent('fail')
+  })
 });

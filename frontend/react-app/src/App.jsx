@@ -8,6 +8,7 @@ Chart.register(LineElement, PointElement, LinearScale, CategoryScale, Filler)
 function App() {
   const [summary, setSummary] = useState(null)
   const [weekly, setWeekly] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     fetch('/api/summary')
@@ -18,7 +19,10 @@ function App() {
         return res.json()
       })
       .then(setSummary)
-      .catch(err => console.error(err))
+      .catch(err => {
+        console.error(err)
+        setError(err.message)
+      })
     fetch('/api/weekly')
       .then(async res => {
         if (!res.ok) {
@@ -27,9 +31,13 @@ function App() {
         return res.json()
       })
       .then(setWeekly)
-      .catch(err => console.error(err))
+      .catch(err => {
+        console.error(err)
+        setError(err.message)
+      })
   }, [])
 
+  if (error) return <p role="alert">Error: {error}</p>
   if (!summary || !weekly) return <p>Loading...</p>
 
   return (
