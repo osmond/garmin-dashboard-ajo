@@ -14,13 +14,17 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
 
    This generates `~/garmin_session.json` containing your login cookies.
 
-2. **Create and edit `.env`**
+2. **Create and edit `.env`** (keep it in the repository root so the API can load `../.env`)
 
    ```bash
    cp .env.example .env
    ```
 
-   Set `GARMIN_COOKIE_PATH` to the session file and fill in the InfluxDB options. Change `PORT` if you need a different API port (defaults to `3002`).
+   Set `GARMIN_COOKIE_PATH` to the session file and fill in the InfluxDB
+   options. The path must be absolute (for example
+   `GARMIN_COOKIE_PATH=$HOME/garmin_session.json`) or it will be resolved
+   relative to `api/` when running `npm start`. Change `PORT` if you need a
+   different API port (defaults to `3002`).
 
 3. **Run the API**
 
