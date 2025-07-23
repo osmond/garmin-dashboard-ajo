@@ -1,4 +1,4 @@
-# Garmin Dashboard Ajo
+# Garmin Dashboard ajo.n
 
 A small dashboard that collects your Garmin activity data. The backend is an Express API that stores daily summaries in InfluxDB and exposes history endpoints. A React app built with Vite displays the results.
 
