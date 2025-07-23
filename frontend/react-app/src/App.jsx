@@ -9,6 +9,14 @@ import ComparePanel from './ComparePanel'
 
 import CalendarPanel from './CalendarPanel'
 import { Button } from './components/ui/button'
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from './components/ui/select'
+import { Input } from './components/ui/input'
 
 
 import './App.css'
@@ -124,15 +132,20 @@ function App() {
 
       <div className="route-loader">
         {activities.length ? (
-          <select value={activityId} onChange={e => setActivityId(e.target.value)}>
-            {activities.map(a => (
-              <option key={a.id} value={a.id}>
-                {a.name} - {a.date ? new Date(a.date).toLocaleDateString() : ''}
-              </option>
-            ))}
-          </select>
+          <Select value={activityId} onValueChange={setActivityId}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select activity" />
+            </SelectTrigger>
+            <SelectContent>
+              {activities.map(a => (
+                <SelectItem key={a.id} value={a.id}>
+                  {a.name} - {a.date ? new Date(a.date).toLocaleDateString() : ''}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         ) : (
-          <input
+          <Input
             value={activityId}
             onChange={e => setActivityId(e.target.value)}
             placeholder="Activity ID"
