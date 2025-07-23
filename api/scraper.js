@@ -90,8 +90,6 @@ async function fetchWeeklySummary() {
   return fetchHistory(7);
 }
 
-module.exports = { fetchGarminSummary, fetchWeeklySummary, fetchHistory };
-
 async function fetchActivityRoute(activityId) {
   await login();
   const gpx = await gcClient.client.get(
@@ -107,6 +105,20 @@ async function fetchActivityRoute(activityId) {
   }));
   return points;
 }
+async function fetchRecentActivities(limit = 10) {
+  await login();
+  const acts = await gcClient.getActivities(0, limit);
+  return acts.map(a => ({
+    id: String(a.activityId),
+    name: a.activityName || `Activity ${a.activityId}`,
+  }));
+}
 
-module.exports = { fetchGarminSummary, fetchWeeklySummary, fetchActivityRoute };
+module.exports = {
+  fetchGarminSummary,
+  fetchWeeklySummary,
+  fetchHistory,
+  fetchActivityRoute,
+  fetchRecentActivities,
+};
 

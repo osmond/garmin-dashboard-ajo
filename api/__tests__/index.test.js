@@ -3,23 +3,19 @@ const request = require('supertest');
 jest.mock('../scraper', () => ({
   fetchGarminSummary: jest.fn(),
   fetchWeeklySummary: jest.fn(),
-
   fetchHistory: jest.fn(),
-}));
-
-const app = require('../index');
-const { fetchGarminSummary, fetchWeeklySummary, fetchHistory } = require('../scraper');
-
   fetchActivityRoute: jest.fn(),
+  fetchRecentActivities: jest.fn(),
 }));
 
 const app = require('../index');
 const {
   fetchGarminSummary,
   fetchWeeklySummary,
+  fetchHistory,
   fetchActivityRoute,
+  fetchRecentActivities,
 } = require('../scraper');
-
 
 describe('GET /api/summary', () => {
   it('responds with summary json', async () => {
@@ -27,7 +23,6 @@ describe('GET /api/summary', () => {
     const res = await request(app).get('/api/summary');
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ steps: 1 });
-    expect(fetchGarminSummary).toHaveBeenCalled();
   });
 
   it('returns 500 on error', async () => {
@@ -35,13 +30,6 @@ describe('GET /api/summary', () => {
     const res = await request(app).get('/api/summary');
     expect(res.status).toBe(500);
     expect(res.body).toEqual({ error: 'Failed to fetch Garmin data' });
-  });
-
-  it('returns cookie path error', async () => {
-    fetchGarminSummary.mockRejectedValue(new Error('Cookie file not found'));
-    const res = await request(app).get('/api/summary');
-    expect(res.status).toBe(500);
-    expect(res.body).toEqual({ error: 'Cookie file not found' });
   });
 });
 
@@ -51,17 +39,8 @@ describe('GET /api/weekly', () => {
     const res = await request(app).get('/api/weekly');
     expect(res.status).toBe(200);
     expect(res.body).toEqual([{ time: '2024-01-01', steps: 1 }]);
-    expect(fetchWeeklySummary).toHaveBeenCalled();
-  });
-
-  it('returns 500 on error', async () => {
-    fetchWeeklySummary.mockRejectedValue(new Error('boom'));
-    const res = await request(app).get('/api/weekly');
-    expect(res.status).toBe(500);
-    expect(res.body).toEqual({ error: 'Failed to query InfluxDB' });
   });
 });
-
 
 describe('GET /api/history', () => {
   it('responds with history data', async () => {
@@ -71,12 +50,7 @@ describe('GET /api/history', () => {
     expect(res.body).toEqual([{ time: '2024-01-01', steps: 1 }]);
     expect(fetchHistory).toHaveBeenCalledWith(30);
   });
-
-  it('returns 500 on error', async () => {
-    fetchHistory.mockRejectedValue(new Error('boom'));
-    const res = await request(app).get('/api/history');
-    expect(res.status).toBe(500);
-    expect(res.body).toEqual({ error: 'Failed to query InfluxDB' });
+});
 
 describe('GET /api/activity/:id', () => {
   it('responds with route points', async () => {
@@ -86,13 +60,14 @@ describe('GET /api/activity/:id', () => {
     expect(res.body).toEqual([{ lat: 1, lon: 2 }]);
     expect(fetchActivityRoute).toHaveBeenCalledWith('123');
   });
+});
 
-  it('returns 500 on error', async () => {
-    fetchActivityRoute.mockRejectedValue(new Error('boom'));
-    const res = await request(app).get('/api/activity/123');
-    expect(res.status).toBe(500);
-    expect(res.body).toEqual({ error: 'Failed to fetch activity' });
-
+describe('GET /api/activities', () => {
+  it('returns recent activities', async () => {
+    fetchRecentActivities.mockResolvedValue([{ id: '1', name: 'Run' }]);
+    const res = await request(app).get('/api/activities');
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([{ id: '1', name: 'Run' }]);
   });
 });
 

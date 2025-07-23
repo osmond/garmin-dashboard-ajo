@@ -20,6 +20,7 @@ function App() {
   const [history, setHistory] = useState(null)
 
   const [route, setRoute] = useState(null)
+  const [activities, setActivities] = useState([])
   const [activityId, setActivityId] = useState('')
 
   const [error, setError] = useState(null)
@@ -57,6 +58,16 @@ function App() {
         return res.json()
       })
       .then(setHistory)
+      .catch(err => {
+        console.error(err)
+        setError(err.message)
+      })
+    fetch('/api/activities')
+      .then(res => res.json())
+      .then(data => {
+        setActivities(data)
+        if (data.length) setActivityId(data[0].id)
+      })
       .catch(err => {
         console.error(err)
         setError(err.message)
@@ -109,11 +120,19 @@ function App() {
 
 
       <div className="route-loader">
-        <input
-          value={activityId}
-          onChange={e => setActivityId(e.target.value)}
-          placeholder="Activity ID"
-        />
+        {activities.length ? (
+          <select value={activityId} onChange={e => setActivityId(e.target.value)}>
+            {activities.map(a => (
+              <option key={a.id} value={a.id}>{a.name}</option>
+            ))}
+          </select>
+        ) : (
+          <input
+            value={activityId}
+            onChange={e => setActivityId(e.target.value)}
+            placeholder="Activity ID"
+          />
+        )}
         <button onClick={loadRoute}>Load Route</button>
       </div>
 

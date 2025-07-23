@@ -7,6 +7,7 @@ const mockStepsData = [
 
 let fetchGarminSummary;
 let fetchActivityRoute;
+let fetchRecentActivities;
 let gcClient;
 
 jest.mock('garmin-connect', () => {
@@ -28,7 +29,7 @@ describe('fetchGarminSummary', () => {
     delete process.env.INFLUX_URL;
     delete process.env.GARMIN_COOKIE_PATH;
     jest.resetModules();
-    ({ fetchGarminSummary, fetchActivityRoute } = require('../scraper'));
+    ({ fetchGarminSummary, fetchActivityRoute, fetchRecentActivities } = require('../scraper'));
     ({ instance: gcClient } = require('garmin-connect'));
     const fs = require('fs');
     const path = require('path');
@@ -96,5 +97,40 @@ describe('fetchActivityRoute', () => {
     const points = await fetchActivityRoute('123');
     expect(points).toEqual([{ lat: 1, lon: 2 }]);
     expect(gcClient.client.get).toHaveBeenCalledWith('gpx/123');
+  });
+});
+
+describe('fetchRecentActivities', () => {
+  beforeEach(async () => {
+    const fs = require('fs');
+    const path = require('path');
+    const cookiePath = path.join(__dirname, 'session.json');
+    await fs.promises.writeFile(
+      cookiePath,
+      JSON.stringify({ oauth1: 'a', oauth2: 'b' })
+    );
+    process.env.GARMIN_COOKIE_PATH = cookiePath;
+    gcClient.getActivities = jest.fn().mockResolvedValue([
+      { activityId: 1, activityName: 'Run' },
+      { activityId: 2, activityName: 'Ride' },
+    ]);
+  });
+
+  afterEach(async () => {
+    const fs = require('fs');
+    const path = require('path');
+    const cookiePath = path.join(__dirname, 'session.json');
+    try {
+      await fs.promises.unlink(cookiePath);
+    } catch {}
+  });
+
+  it('returns simplified activity list', async () => {
+    const acts = await fetchRecentActivities();
+    expect(acts).toEqual([
+      { id: '1', name: 'Run' },
+      { id: '2', name: 'Ride' },
+    ]);
+    expect(gcClient.getActivities).toHaveBeenCalledWith(0, 10);
   });
 });
