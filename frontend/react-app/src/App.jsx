@@ -9,6 +9,19 @@ function App() {
   const [summary, setSummary] = useState(null)
   const [weekly, setWeekly] = useState(null)
   const [error, setError] = useState(null)
+  const [stepGoal, setStepGoal] = useState(() => Number(localStorage.getItem('stepGoal')) || 7000)
+  const [sleepGoal, setSleepGoal] = useState(() => Number(localStorage.getItem('sleepGoal')) || 8)
+  const [hrGoal, setHrGoal] = useState(() => Number(localStorage.getItem('hrGoal')) || 120)
+
+  useEffect(() => {
+    localStorage.setItem('stepGoal', stepGoal)
+  }, [stepGoal])
+  useEffect(() => {
+    localStorage.setItem('sleepGoal', sleepGoal)
+  }, [sleepGoal])
+  useEffect(() => {
+    localStorage.setItem('hrGoal', hrGoal)
+  }, [hrGoal])
 
   useEffect(() => {
     fetch('/api/summary')
@@ -37,17 +50,60 @@ function App() {
       })
   }, [])
 
+  const stepStreak = weekly
+    ? (() => {
+        let count = 0
+        for (let i = weekly.length - 1; i >= 0; i--) {
+          if (weekly[i].steps >= stepGoal) count++
+          else break
+        }
+        return count
+      })()
+    : 0
+
   if (error) return <p role="alert">Error: {error}</p>
   if (!summary || !weekly) return <p>Loading...</p>
 
   return (
     <div className="dashboard">
       <h1>Garmin Dashboard</h1>
+      {stepStreak >= 2 && (
+        <p className="celebration" role="status">
+          🎉 {stepStreak} day step streak over {stepGoal}!
+        </p>
+      )}
+      <div className="goals">
+        <h2>Goals</h2>
+        <label>
+          Step Goal:{' '}
+          <input
+            type="number"
+            value={stepGoal}
+            onChange={e => setStepGoal(Number(e.target.value))}
+          />
+        </label>
+        <label>
+          Sleep Goal (hrs):{' '}
+          <input
+            type="number"
+            value={sleepGoal}
+            onChange={e => setSleepGoal(Number(e.target.value))}
+          />
+        </label>
+        <label>
+          HR Zone Goal:{' '}
+          <input
+            type="number"
+            value={hrGoal}
+            onChange={e => setHrGoal(Number(e.target.value))}
+          />
+        </label>
+      </div>
       <ul>
-        <li><strong>Steps:</strong> {summary.steps}</li>
-        <li><strong>Resting HR:</strong> {summary.resting_hr}</li>
+        <li><strong>Steps:</strong> {summary.steps} / {stepGoal}</li>
+        <li><strong>Resting HR:</strong> {summary.resting_hr} / {hrGoal}</li>
         <li><strong>VO2 Max:</strong> {summary.vo2max}</li>
-        <li><strong>Sleep:</strong> {summary.sleep_hours} hrs</li>
+        <li><strong>Sleep:</strong> {summary.sleep_hours} / {sleepGoal} hrs</li>
       </ul>
       
       <div className="chart-container">

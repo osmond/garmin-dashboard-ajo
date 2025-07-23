@@ -25,7 +25,23 @@ describe('App', () => {
         text: () => Promise.resolve('')
       });
     render(<App />);
-    await screen.findByText('100');
+    await screen.findByRole('heading', { name: /Garmin Dashboard/i });
+    expect(screen.getByLabelText(/Step Goal/i)).toBeInTheDocument();
+  });
+
+  it('shows streak message when steps exceed goal', async () => {
+    const summary = { steps: 8000, resting_hr: 60, vo2max: 50, sleep_hours: 8 };
+    const weekly = [
+      { time: '2024-01-01', steps: 8000 },
+      { time: '2024-01-02', steps: 8000 },
+      { time: '2024-01-03', steps: 8000 },
+    ];
+    global.fetch = vi.fn()
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(summary), text: () => Promise.resolve('') })
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(weekly), text: () => Promise.resolve('') });
+    render(<App />);
+    const status = await screen.findByRole('status');
+    expect(status).toHaveTextContent('3 day step streak');
   });
 
   it('shows error message if fetch fails', async () => {

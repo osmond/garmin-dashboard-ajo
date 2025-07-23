@@ -61,6 +61,13 @@ Run all tests with:
 npm test
 ```
 
+### Goals and Streaks
+
+The dashboard lets you set daily step, sleep and HR goals in the UI. Your
+settings are stored in `localStorage` so they persist between visits. When your
+weekly step history includes two or more consecutive days that exceed the step
+goal, a celebratory message appears showing the current streak.
+
 ### Required environment variables
 
 - `GARMIN_EMAIL` and `GARMIN_PASSWORD` for `save-garmin-session.js`

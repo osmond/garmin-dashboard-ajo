@@ -18,3 +18,13 @@ ul {
 .chart-container {
   max-width: 600px;
 }
+
+.celebration {
+  color: #fdd835;
+  font-weight: bold;
+}
+
+.goals label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
