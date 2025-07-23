@@ -52,6 +52,7 @@ Husky is used to enforce this guideline. After installing dependencies, run
    ```
 
 5. Vite proxies `/api` requests to `http://localhost:3002` and the server schedules a Garmin sync each midnight. Historical data is available at `/api/weekly`.
+6. The daily cron job uses the server's local timezone. Set `TZ` before starting the app or adjust the cron expression in `api/index.js` to change it.
 
 ## Running Tests
 
