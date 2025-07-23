@@ -2,6 +2,14 @@ import { useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import { Chart, LineElement, PointElement, LinearScale, CategoryScale, Filler } from 'chart.js'
 
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from './components/ui/select'
+
 Chart.register(LineElement, PointElement, LinearScale, CategoryScale, Filler)
 
 const fields = [
@@ -25,16 +33,30 @@ export default function ComparePanel({ history }) {
     <div className="compare-panel">
       <h2>Compare Metrics</h2>
       <div className="selectors">
-        <select value={first} onChange={e => setFirst(e.target.value)}>
-          {fields.map(f => (
-            <option key={f.key} value={f.key}>{f.label}</option>
-          ))}
-        </select>
-        <select value={second} onChange={e => setSecond(e.target.value)}>
-          {fields.map(f => (
-            <option key={f.key} value={f.key}>{f.label}</option>
-          ))}
-        </select>
+        <Select value={first} onValueChange={setFirst}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {fields.map(f => (
+              <SelectItem key={f.key} value={f.key}>
+                {f.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={second} onValueChange={setSecond}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {fields.map(f => (
+              <SelectItem key={f.key} value={f.key}>
+                {f.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="chart-container">
         <Line
