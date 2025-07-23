@@ -18,7 +18,14 @@ async function getStepsData(date) {
 }
 
 async function login() {
-  await gcClient.login(process.env.GARMIN_EMAIL, process.env.GARMIN_PASSWORD);
+  const { GARMIN_EMAIL, GARMIN_PASSWORD } = process.env;
+  if (!GARMIN_EMAIL) {
+    throw new Error('Missing GARMIN_EMAIL environment variable.');
+  }
+  if (!GARMIN_PASSWORD) {
+    throw new Error('Missing GARMIN_PASSWORD environment variable.');
+  }
+  await gcClient.login(GARMIN_EMAIL, GARMIN_PASSWORD);
 }
 
 async function writeToInflux(summary) {
