@@ -23,6 +23,13 @@ describe('GET /api/summary', () => {
     expect(res.status).toBe(500);
     expect(res.body).toEqual({ error: 'Failed to fetch Garmin data' });
   });
+
+  it('returns cookie path error', async () => {
+    fetchGarminSummary.mockRejectedValue(new Error('Cookie file not found'));
+    const res = await request(app).get('/api/summary');
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({ error: 'Cookie file not found' });
+  });
 });
 
 describe('GET /api/weekly', () => {

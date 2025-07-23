@@ -13,7 +13,15 @@ app.get('/api/summary', async (req, res) => {
     res.json(summary);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to fetch Garmin data' });
+    if (
+      err.message &&
+      (err.message.includes('GARMIN_COOKIE_PATH') ||
+        err.message.includes('Cookie file not found'))
+    ) {
+      res.status(500).json({ error: err.message });
+    } else {
+      res.status(500).json({ error: 'Failed to fetch Garmin data' });
+    }
   }
 });
 
