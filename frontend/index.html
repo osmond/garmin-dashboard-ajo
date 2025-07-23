@@ -18,8 +18,18 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     Promise.all([
-      fetch('/api/summary').then(r => r.json()),
-      fetch('/api/weekly').then(r => r.json())
+      fetch('/api/summary').then(async r => {
+        if (!r.ok) {
+          throw new Error(await r.text())
+        }
+        return r.json()
+      }),
+      fetch('/api/weekly').then(async r => {
+        if (!r.ok) {
+          throw new Error(await r.text())
+        }
+        return r.json()
+      })
     ]).then(([data, weekly]) => {
       document.getElementById('summary').innerHTML = `
         <p><strong>Steps:</strong> ${data.steps}</p>

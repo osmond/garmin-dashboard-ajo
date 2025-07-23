@@ -11,11 +11,21 @@ function App() {
 
   useEffect(() => {
     fetch('/api/summary')
-      .then(res => res.json())
+      .then(async res => {
+        if (!res.ok) {
+          throw new Error(await res.text())
+        }
+        return res.json()
+      })
       .then(setSummary)
       .catch(err => console.error(err))
     fetch('/api/weekly')
-      .then(res => res.json())
+      .then(async res => {
+        if (!res.ok) {
+          throw new Error(await res.text())
+        }
+        return res.json()
+      })
       .then(setWeekly)
       .catch(err => console.error(err))
   }, [])
