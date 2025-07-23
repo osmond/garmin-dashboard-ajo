@@ -1,6 +1,7 @@
 
 const { GarminConnect } = require('garmin-connect');
 const { InfluxDB, Point } = require('@influxdata/influxdb-client');
+const fs = require('fs');
 
 const gcClient = new GarminConnect({
   username: process.env.GARMIN_EMAIL,
@@ -53,6 +54,23 @@ async function getBodyBattery(date) {
 }
 
 async function login() {
+  if (
+    process.env.GARMIN_COOKIE_PATH &&
+    fs.existsSync(process.env.GARMIN_COOKIE_PATH)
+  ) {
+    const data = JSON.parse(
+      fs.readFileSync(process.env.GARMIN_COOKIE_PATH, 'utf8')
+    );
+    if (typeof gcClient.setSession === 'function') {
+      gcClient.setSession(data);
+      return;
+    }
+    if (typeof gcClient.loadToken === 'function') {
+      gcClient.loadToken(data.oauth1, data.oauth2);
+      return;
+    }
+  }
+
   ensureGarminCredentials();
   await gcClient.login(process.env.GARMIN_EMAIL, process.env.GARMIN_PASSWORD);
 }
