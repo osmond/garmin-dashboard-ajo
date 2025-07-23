@@ -1,8 +1,8 @@
 
+require('dotenv').config();
 const express = require('express');
 const { fetchGarminSummary, fetchWeeklySummary } = require('./scraper');
 const cron = require('node-cron');
-require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3002;
