@@ -5,6 +5,7 @@ import { Chart, LineElement, PointElement, LinearScale, CategoryScale, Filler } 
 import RouteMap from './RouteMap.jsx'
 
 import InsightsPanel from './InsightsPanel'
+import ComparePanel from './ComparePanel'
 
 import CalendarPanel from './CalendarPanel'
 
@@ -138,7 +139,9 @@ function App() {
 
       <RouteMap points={route} />
 
+
       <InsightsPanel weekly={weekly} />
+      <ComparePanel history={history} />
 
     </div>
   )
