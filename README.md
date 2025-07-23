@@ -40,7 +40,16 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
 
 Vite proxies `/api` requests to your running API server. The API fetches new data each midnight and exposes a weekly history at `/api/weekly`.
 
-### Tests
+### Running Tests
+
+Before running tests or preparing Git hooks, install dependencies in each
+workspace:
+
+```bash
+npm install                # root
+npm install --prefix api
+npm install --prefix frontend/react-app
+```
 
 Run all tests with:
 
