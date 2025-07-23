@@ -4,7 +4,11 @@ const path = require('path');
 // from the api/ directory works as documented.
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const express = require('express');
-const { fetchGarminSummary, fetchWeeklySummary } = require('./scraper');
+const {
+  fetchGarminSummary,
+  fetchWeeklySummary,
+  fetchSummaryByDate,
+} = require('./scraper');
 const cron = require('node-cron');
 
 const app = express();
@@ -32,6 +36,20 @@ app.get('/api/weekly', async (req, res) => {
   try {
     const data = await fetchWeeklySummary();
     res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to query InfluxDB' });
+  }
+});
+
+app.get('/api/day/:date', async (req, res) => {
+  try {
+    const data = await fetchSummaryByDate(req.params.date);
+    if (data) {
+      res.json(data);
+    } else {
+      res.status(404).json({ error: 'No data' });
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to query InfluxDB' });

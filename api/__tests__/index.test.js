@@ -2,11 +2,12 @@ const request = require('supertest');
 
 jest.mock('../scraper', () => ({
   fetchGarminSummary: jest.fn(),
-  fetchWeeklySummary: jest.fn()
+  fetchWeeklySummary: jest.fn(),
+  fetchSummaryByDate: jest.fn()
 }));
 
 const app = require('../index');
-const { fetchGarminSummary, fetchWeeklySummary } = require('../scraper');
+const { fetchGarminSummary, fetchWeeklySummary, fetchSummaryByDate } = require('../scraper');
 
 describe('GET /api/summary', () => {
   it('responds with summary json', async () => {
@@ -44,6 +45,30 @@ describe('GET /api/weekly', () => {
   it('returns 500 on error', async () => {
     fetchWeeklySummary.mockRejectedValue(new Error('boom'));
     const res = await request(app).get('/api/weekly');
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({ error: 'Failed to query InfluxDB' });
+  });
+});
+
+describe('GET /api/day/:date', () => {
+  it('responds with daily data', async () => {
+    fetchSummaryByDate.mockResolvedValue({ steps: 2 });
+    const res = await request(app).get('/api/day/2024-01-01');
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ steps: 2 });
+    expect(fetchSummaryByDate).toHaveBeenCalledWith('2024-01-01');
+  });
+
+  it('returns 404 when missing', async () => {
+    fetchSummaryByDate.mockResolvedValue(null);
+    const res = await request(app).get('/api/day/2024-01-01');
+    expect(res.status).toBe(404);
+    expect(res.body).toEqual({ error: 'No data' });
+  });
+
+  it('returns 500 on error', async () => {
+    fetchSummaryByDate.mockRejectedValue(new Error('fail'));
+    const res = await request(app).get('/api/day/2024-01-01');
     expect(res.status).toBe(500);
     expect(res.body).toEqual({ error: 'Failed to query InfluxDB' });
   });

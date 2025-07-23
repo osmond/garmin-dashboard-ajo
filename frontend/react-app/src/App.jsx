@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import { Chart, LineElement, PointElement, LinearScale, CategoryScale, Filler } from 'chart.js'
+import Calendar from 'react-calendar'
+import 'react-calendar/dist/Calendar.css'
 import './App.css'
 
 Chart.register(LineElement, PointElement, LinearScale, CategoryScale, Filler)
@@ -8,10 +10,11 @@ Chart.register(LineElement, PointElement, LinearScale, CategoryScale, Filler)
 function App() {
   const [summary, setSummary] = useState(null)
   const [weekly, setWeekly] = useState(null)
+  const [selectedDate, setSelectedDate] = useState(() => new Date())
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    fetch('/api/summary')
+    fetch(`/api/day/${selectedDate.toISOString().slice(0, 10)}`)
       .then(async res => {
         if (!res.ok) {
           throw new Error(await res.text())
@@ -23,6 +26,9 @@ function App() {
         console.error(err)
         setError(err.message)
       })
+  }, [selectedDate])
+
+  useEffect(() => {
     fetch('/api/weekly')
       .then(async res => {
         if (!res.ok) {
@@ -43,6 +49,16 @@ function App() {
   return (
     <div className="dashboard">
       <h1>Garmin Dashboard</h1>
+      <Calendar
+        onChange={setSelectedDate}
+        value={selectedDate}
+        tileClassName={({ date }) => {
+          const entry = weekly.find(
+            d => new Date(d.time).toDateString() === date.toDateString()
+          )
+          return entry && entry.steps > 10000 ? 'highlight' : null
+        }}
+      />
       <ul>
         <li><strong>Steps:</strong> {summary.steps}</li>
         <li><strong>Resting HR:</strong> {summary.resting_hr}</li>

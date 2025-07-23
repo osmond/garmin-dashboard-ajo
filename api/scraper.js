@@ -84,4 +84,37 @@ async function fetchWeeklySummary() {
   return results;
 }
 
-module.exports = { fetchGarminSummary, fetchWeeklySummary };
+async function fetchSummaryByDate(dateStr) {
+  if (
+    !process.env.INFLUX_URL ||
+    !process.env.INFLUX_TOKEN ||
+    !process.env.INFLUX_ORG ||
+    !process.env.INFLUX_BUCKET
+  ) {
+    return null;
+  }
+  const influx = new InfluxDB({ url: process.env.INFLUX_URL, token: process.env.INFLUX_TOKEN });
+  const queryApi = influx.getQueryApi(process.env.INFLUX_ORG);
+  const start = new Date(dateStr);
+  const stop = new Date(start);
+  stop.setDate(stop.getDate() + 1);
+  const query = `from(bucket: "${process.env.INFLUX_BUCKET}")
+    |> range(start: ${start.toISOString()}, stop: ${stop.toISOString()})
+    |> filter(fn: (r) => r._measurement == "garmin_summary")
+    |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+    |> limit(n:1)`;
+  const results = [];
+  await queryApi.collectRows(query, (row, tableMeta) => {
+    const o = tableMeta.toObject(row);
+    results.push({
+      time: o._time,
+      steps: o.steps,
+      resting_hr: o.resting_hr,
+      vo2max: o.vo2max,
+      sleep_hours: o.sleep_hours,
+    });
+  });
+  return results[0] || null;
+}
+
+module.exports = { fetchGarminSummary, fetchWeeklySummary, fetchSummaryByDate };

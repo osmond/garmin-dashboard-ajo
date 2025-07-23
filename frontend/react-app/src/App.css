@@ -18,3 +18,8 @@ ul {
 .chart-container {
   max-width: 600px;
 }
+
+.highlight {
+  background: #2e7d32;
+  color: #fff;
+}
