@@ -69,6 +69,13 @@ describe('GET /api/activities', () => {
     expect(res.status).toBe(200);
     expect(res.body).toEqual([{ id: '1', name: 'Run' }]);
   });
+
+  it('passes limit query parameter', async () => {
+    fetchRecentActivities.mockResolvedValue([]);
+    const res = await request(app).get('/api/activities?limit=5');
+    expect(res.status).toBe(200);
+    expect(fetchRecentActivities).toHaveBeenCalledWith(5);
+  });
 });
 
 describe('Unknown routes', () => {

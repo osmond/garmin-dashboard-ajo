@@ -111,8 +111,16 @@ describe('fetchRecentActivities', () => {
     );
     process.env.GARMIN_COOKIE_PATH = cookiePath;
     gcClient.getActivities = jest.fn().mockResolvedValue([
-      { activityId: 1, activityName: 'Run' },
-      { activityId: 2, activityName: 'Ride' },
+      {
+        activityId: 1,
+        activityName: 'Run',
+        startTimeLocal: '2024-01-01T00:00:00',
+      },
+      {
+        activityId: 2,
+        activityName: 'Ride',
+        startTimeLocal: '2024-01-02T00:00:00',
+      },
     ]);
   });
 
@@ -128,9 +136,14 @@ describe('fetchRecentActivities', () => {
   it('returns simplified activity list', async () => {
     const acts = await fetchRecentActivities();
     expect(acts).toEqual([
-      { id: '1', name: 'Run' },
-      { id: '2', name: 'Ride' },
+      { id: '1', name: 'Run', date: '2024-01-01T00:00:00' },
+      { id: '2', name: 'Ride', date: '2024-01-02T00:00:00' },
     ]);
     expect(gcClient.getActivities).toHaveBeenCalledWith(0, 10);
+  });
+
+  it('uses provided limit', async () => {
+    await fetchRecentActivities(5);
+    expect(gcClient.getActivities).toHaveBeenCalledWith(0, 5);
   });
 });

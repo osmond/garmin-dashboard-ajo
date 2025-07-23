@@ -24,6 +24,7 @@ function App() {
   const [route, setRoute] = useState(null)
   const [activities, setActivities] = useState([])
   const [activityId, setActivityId] = useState('')
+  const [activityLimit] = useState(20)
 
   const [error, setError] = useState(null)
 
@@ -64,7 +65,7 @@ function App() {
         console.error(err)
         setError(err.message)
       })
-    fetch('/api/activities')
+    fetch(`/api/activities?limit=${activityLimit}`)
       .then(res => res.json())
       .then(data => {
         setActivities(data)
@@ -125,7 +126,9 @@ function App() {
         {activities.length ? (
           <select value={activityId} onChange={e => setActivityId(e.target.value)}>
             {activities.map(a => (
-              <option key={a.id} value={a.id}>{a.name}</option>
+              <option key={a.id} value={a.id}>
+                {a.name} - {a.date ? new Date(a.date).toLocaleDateString() : ''}
+              </option>
             ))}
           </select>
         ) : (

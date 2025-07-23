@@ -111,6 +111,7 @@ async function fetchRecentActivities(limit = 10) {
   return acts.map(a => ({
     id: String(a.activityId),
     name: a.activityName || `Activity ${a.activityId}`,
+    date: a.startTimeLocal || a.startTime || null,
   }));
 }
 

@@ -54,8 +54,9 @@ app.get('/api/history', async (req, res) => {
 });
 
 app.get('/api/activities', async (req, res) => {
+  const limit = req.query.limit ? parseInt(req.query.limit, 10) : undefined;
   try {
-    const acts = await fetchRecentActivities();
+    const acts = await fetchRecentActivities(limit);
     res.json(acts);
   } catch (err) {
     console.error(err);
