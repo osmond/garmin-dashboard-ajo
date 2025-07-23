@@ -3,11 +3,23 @@ const request = require('supertest');
 jest.mock('../scraper', () => ({
   fetchGarminSummary: jest.fn(),
   fetchWeeklySummary: jest.fn(),
+
   fetchHistory: jest.fn(),
 }));
 
 const app = require('../index');
 const { fetchGarminSummary, fetchWeeklySummary, fetchHistory } = require('../scraper');
+
+  fetchActivityRoute: jest.fn(),
+}));
+
+const app = require('../index');
+const {
+  fetchGarminSummary,
+  fetchWeeklySummary,
+  fetchActivityRoute,
+} = require('../scraper');
+
 
 describe('GET /api/summary', () => {
   it('responds with summary json', async () => {
@@ -50,6 +62,7 @@ describe('GET /api/weekly', () => {
   });
 });
 
+
 describe('GET /api/history', () => {
   it('responds with history data', async () => {
     fetchHistory.mockResolvedValue([{ time: '2024-01-01', steps: 1 }]);
@@ -64,6 +77,22 @@ describe('GET /api/history', () => {
     const res = await request(app).get('/api/history');
     expect(res.status).toBe(500);
     expect(res.body).toEqual({ error: 'Failed to query InfluxDB' });
+
+describe('GET /api/activity/:id', () => {
+  it('responds with route points', async () => {
+    fetchActivityRoute.mockResolvedValue([{ lat: 1, lon: 2 }]);
+    const res = await request(app).get('/api/activity/123');
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([{ lat: 1, lon: 2 }]);
+    expect(fetchActivityRoute).toHaveBeenCalledWith('123');
+  });
+
+  it('returns 500 on error', async () => {
+    fetchActivityRoute.mockRejectedValue(new Error('boom'));
+    const res = await request(app).get('/api/activity/123');
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({ error: 'Failed to fetch activity' });
+
   });
 });
 

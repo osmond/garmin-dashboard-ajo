@@ -4,7 +4,8 @@
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "garmin-connect": "^1.6.2",
-    "node-cron": "^3.0.2"
+    "node-cron": "^3.0.2",
+    "fast-xml-parser": "^4.3.5"
   },
   "name": "api",
   "version": "1.0.0",

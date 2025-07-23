@@ -43,6 +43,7 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    ```
 
 Vite proxies `/api` requests to your running API server. The API fetches new data each midnight and exposes a weekly history at `/api/weekly`.
+An additional endpoint `/api/activity/:id` returns GPX coordinates for a specific activity.
 
 ### Running Tests
 

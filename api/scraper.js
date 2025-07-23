@@ -2,6 +2,7 @@
 const { GarminConnect } = require('garmin-connect');
 const { InfluxDB, Point } = require('@influxdata/influxdb-client');
 const fs = require('fs');
+const { XMLParser } = require('fast-xml-parser');
 
 const gcClient = new GarminConnect({ username: '', password: '' });
 
@@ -84,8 +85,28 @@ async function fetchHistory(days = 7) {
   return results;
 }
 
+
 async function fetchWeeklySummary() {
   return fetchHistory(7);
 }
 
 module.exports = { fetchGarminSummary, fetchWeeklySummary, fetchHistory };
+
+async function fetchActivityRoute(activityId) {
+  await login();
+  const gpx = await gcClient.client.get(
+    gcClient.url.DOWNLOAD_GPX + activityId
+  );
+  const parser = new XMLParser({ ignoreAttributes: false });
+  const data = parser.parse(gpx);
+  const trkpts = data?.gpx?.trk?.trkseg?.trkpt;
+  const arr = Array.isArray(trkpts) ? trkpts : trkpts ? [trkpts] : [];
+  const points = arr.map(p => ({
+    lat: parseFloat(p['@_lat']),
+    lon: parseFloat(p['@_lon']),
+  }));
+  return points;
+}
+
+module.exports = { fetchGarminSummary, fetchWeeklySummary, fetchActivityRoute };
+
