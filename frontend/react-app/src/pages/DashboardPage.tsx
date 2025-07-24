@@ -2,16 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { Card, CardHeader, CardContent } from '@/components/ui/card'
 
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-
 import CalendarPanel from '@/CalendarPanel'
 import InsightsPanel from '@/InsightsPanel'
 import ComparePanel from '@/ComparePanel'
 import { Button } from '@/components/ui/button'
-import StepsChart from '@/components/charts/StepsChart'
-import RestingHRChart from '@/components/charts/RestingHRChart'
-import Vo2MaxChart from '@/components/charts/Vo2MaxChart'
-import SleepChart from '@/components/charts/SleepChart'
 
 export default function DashboardPage() {
   const [summary, setSummary] = useState<any>(null)
