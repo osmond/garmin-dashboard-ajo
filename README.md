@@ -1,6 +1,6 @@
 # Garmin Dashboard ajo.n
 
-A small dashboard that collects your Garmin activity data. The backend is an Express API that stores daily summaries in InfluxDB and exposes history endpoints. A React app built with Vite displays the results.
+A small dashboard that collects your Garmin activity data. The backend is an Express API that stores daily summaries in InfluxDB and exposes history endpoints. A single-page React app built with Vite displays the results. Tailwind CSS and shadcn-ui are preconfigured.
 
 ## Quick start
 
@@ -26,16 +26,18 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    relative to `api/` when running `npm start`. Change `PORT` if you need a
    different API port (defaults to `3002`).
 
-3. **Install dependencies and start the dashboard**
+3. **Install dependencies and start the single-page app**
 
    ```bash
    npm install
    npm install --prefix api
    npm install --prefix frontend/react-app
-   npm start
+   npm start    # starts both the API and React dev server
    ```
 
-Vite proxies `/api` requests to your running API server. The API fetches new data each midnight and exposes a weekly history at `/api/weekly`.
+   The React app lives in `frontend/react-app` and already includes Tailwind CSS and shadcn-ui.
+
+The single-page React app uses Vite to proxy `/api` requests to your running API server. The API fetches new data each midnight and exposes a weekly history at `/api/weekly`.
 An additional endpoint `/api/activity/:id` returns GPX coordinates for a specific activity.
 
 ### Running Tests
