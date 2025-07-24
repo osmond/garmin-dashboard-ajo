@@ -40,6 +40,10 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    port `3000`. The Next.js app lives in `frontend-next` and already includes
    Tailwind CSS and shadcn-ui.
 
+## Preview URL
+
+Every branch is automatically deployed to Vercel. The latest preview is available at <https://garmin-dashboard-ajo.vercel.app>.
+
 Next.js serves pages from `frontend-next`. The API fetches new data each midnight and exposes a weekly history at `/api/weekly`.
 An additional endpoint `/api/activity/:id` returns GPX coordinates for a specific activity.
 
