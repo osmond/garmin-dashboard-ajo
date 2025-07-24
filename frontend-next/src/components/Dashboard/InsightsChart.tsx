@@ -14,7 +14,7 @@ export default function InsightsChart() {
 
   if (isLoading || !data) return null
 
-  const chartData = data.weekly.map(d => ({
+  const chartData = data.activities.map(d => ({
     name: new Date(d.time).toLocaleDateString(undefined, {
       month: "short",
       day: "numeric",
