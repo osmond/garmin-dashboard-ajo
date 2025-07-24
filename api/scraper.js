@@ -30,15 +30,33 @@ async function login() {
 }
 
 async function writeToInflux(summary) {
-  if (!process.env.INFLUX_URL || !process.env.INFLUX_TOKEN || !process.env.INFLUX_ORG || !process.env.INFLUX_BUCKET) return;
+  if (
+    !process.env.INFLUX_URL ||
+    !process.env.INFLUX_TOKEN ||
+    !process.env.INFLUX_ORG ||
+    !process.env.INFLUX_BUCKET
+  ) {
+    return;
+  }
 
-  const influx = new InfluxDB({ url: process.env.INFLUX_URL, token: process.env.INFLUX_TOKEN });
-  const writeApi = influx.getWriteApi(process.env.INFLUX_ORG, process.env.INFLUX_BUCKET);
+  const influx = new InfluxDB({
+    url: process.env.INFLUX_URL,
+    token: process.env.INFLUX_TOKEN,
+  });
+  const writeApi = influx.getWriteApi(
+    process.env.INFLUX_ORG,
+    process.env.INFLUX_BUCKET
+  );
   const point = new Point('garmin_summary')
     .floatField('steps', summary.steps)
     .floatField('resting_hr', summary.resting_hr)
     .floatField('vo2max', summary.vo2max || 0)
     .floatField('sleep_hours', summary.sleep_hours);
+
+  if (summary.time) {
+    point.timestamp(new Date(summary.time));
+  }
+
   writeApi.writePoint(point);
   await writeApi.close();
 }
@@ -121,5 +139,8 @@ module.exports = {
   fetchHistory,
   fetchActivityRoute,
   fetchRecentActivities,
+  login,
+  writeToInflux,
+  gcClient,
 };
 

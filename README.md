@@ -67,6 +67,19 @@ npm test   # runs "npm test --prefix api" and "npm test --prefix frontend/react-
 - `GARMIN_EMAIL` and `GARMIN_PASSWORD` for `save-garmin-session.js`
 - `GARMIN_COOKIE_PATH` location of the saved session
 
+### Backfill historical data
+
+Use `scripts/backfill-garmin-history.js` to populate InfluxDB with data from
+past dates. Provide a start and end date or a number of days to backfill.
+
+```bash
+# backfill between two dates (inclusive)
+node scripts/backfill-garmin-history.js 2024-01-01 2024-01-07
+
+# or backfill the last 30 days
+node scripts/backfill-garmin-history.js --days 30
+```
+
 ## License
 
 [MIT](LICENSE)
