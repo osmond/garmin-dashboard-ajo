@@ -1,5 +1,20 @@
 #!/usr/bin/env node
+const fs = require('fs');
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const { login, writeToInflux, gcClient } = require('../api/scraper');
+
+if (!process.env.GARMIN_COOKIE_PATH) {
+  const sessionPath = path.resolve(__dirname, '../.session');
+  if (fs.existsSync(sessionPath)) {
+    process.env.GARMIN_COOKIE_PATH = sessionPath;
+  }
+}
+
+if (!process.env.GARMIN_COOKIE_PATH) {
+  console.error('GARMIN_COOKIE_PATH not set and no .session file found');
+  process.exit(1);
+}
 
 const args = process.argv.slice(2);
 
