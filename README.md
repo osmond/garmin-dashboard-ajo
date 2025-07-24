@@ -48,18 +48,18 @@ An additional endpoint `/api/activity/:id` returns GPX coordinates for a specifi
 ### Running Tests
 
 Before running tests or preparing Git hooks, install dependencies in each
-workspace:
+workspace. The frontend dependencies must be installed or `npm test` will fail:
 
 ```bash
-npm install                # root
-npm install --prefix api
-npm install --prefix frontend/react-app
+npm install                # root dev tools
+npm install --prefix api   # API dependencies
+npm install --prefix frontend/react-app   # React app dependencies
 ```
 
-Run all tests with:
+Run all API and React tests with:
 
 ```bash
-npm test
+npm test   # runs "npm test --prefix api" and "npm test --prefix frontend/react-app"
 ```
 
 ### Required environment variables
