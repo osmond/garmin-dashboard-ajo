@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
+
+import { Card, CardHeader, CardContent } from '@/components/ui/card'
+
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+
 import CalendarPanel from '@/CalendarPanel'
 import InsightsPanel from '@/InsightsPanel'
 import ComparePanel from '@/ComparePanel'
@@ -48,66 +52,62 @@ export default function DashboardPage() {
   if (!summary || !weekly || !history) return <p>Loading...</p>
 
   return (
-    <main className="p-4 bg-background min-h-screen text-foreground">
-      <h1 className="text-2xl font-bold mb-4">Garmin Dashboard</h1>
+    <main className="p-6 md:p-10 max-w-screen-xl mx-auto bg-background text-foreground">
+      <h1 className="text-2xl font-semibold mb-6">Garmin Dashboard</h1>
 
-      <section className="mb-6">
-        <CalendarPanel history={history} />
-      </section>
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <Card>
+          <CardHeader>
+            <h3 className="text-lg font-semibold">Calendar</h3>
+          </CardHeader>
+          <CardContent>
+            <CalendarPanel history={history} />
+          </CardContent>
+        </Card>
 
-      <section className="grid md:grid-cols-2 gap-4 mb-6">
-        <Card className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xl font-semibold">Key Metrics</h2>
+        <Card>
+          <CardHeader className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">Key Metrics</h3>
             <Button size="sm" onClick={loadData}>Reload</Button>
-          </div>
-          <ul className="grid grid-cols-2 gap-2">
-            <li><strong>Steps:</strong> {summary.steps}</li>
-            <li><strong>Resting HR:</strong> {summary.resting_hr}</li>
-            <li><strong>VO2 Max:</strong> {summary.vo2max}</li>
-            <li><strong>Sleep:</strong> {summary.sleep_hours} hrs</li>
-          </ul>
-        </Card>
-        <InsightsPanel weekly={weekly} />
-      </section>
-
-      <section className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Daily Steps</CardTitle>
           </CardHeader>
-          <CardContent>
-            <StepsChart data={weekly.map(d => ({ date: new Date(d.time).toLocaleDateString(), steps: d.steps }))} />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Resting HR</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <RestingHRChart data={weekly.map(d => ({ date: new Date(d.time).toLocaleDateString(), resting_hr: d.resting_hr }))} />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>VO2 Max</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Vo2MaxChart data={weekly.map(d => ({ date: new Date(d.time).toLocaleDateString(), vo2max: d.vo2max }))} />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Sleep Duration</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <SleepChart data={weekly.map(d => ({ date: new Date(d.time).toLocaleDateString(), sleep_hours: d.sleep_hours }))} />
+          <CardContent className="grid grid-cols-2 gap-2">
+            <div>
+              <span className="font-semibold">Steps:</span> {summary.steps}
+            </div>
+            <div>
+              <span className="font-semibold">Resting HR:</span> {summary.resting_hr}
+            </div>
+            <div>
+              <span className="font-semibold">VO₂ Max:</span> {summary.vo2max}
+            </div>
+            <div>
+              <span className="font-semibold">Sleep:</span> {summary.sleep_hours} hrs
+            </div>
           </CardContent>
         </Card>
       </section>
 
-      <section className="mb-6">
-        <ComparePanel history={history} />
+
+      <section className="grid md:grid-cols-2 gap-6 mb-10">
+        <Card>
+          <CardHeader>
+            <h3 className="text-lg font-semibold">Insights</h3>
+          </CardHeader>
+          <CardContent>
+            <InsightsPanel weekly={weekly} />
+
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+
+            <h3 className="text-lg font-semibold">Compare Metrics</h3>
+          </CardHeader>
+          <CardContent>
+            <ComparePanel history={history} />
+          </CardContent>
+        </Card>
+
       </section>
     </main>
   )

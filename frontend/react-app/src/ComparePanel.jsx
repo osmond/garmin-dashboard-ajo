@@ -1,6 +1,12 @@
 import { useState } from 'react'
-import CompareMetricsChart from '@/components/charts/CompareMetricsChart'
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
 
 import {
   Select,
@@ -9,7 +15,6 @@ import {
   SelectContent,
   SelectItem,
 } from './components/ui/select'
-
 
 const fields = [
   { key: 'steps', label: 'Steps' },
@@ -30,47 +35,52 @@ export default function ComparePanel({ history }) {
   }))
 
   return (
-    <Card className="compare-panel">
-      <CardHeader>
-        <CardTitle>Compare Metrics</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="selectors flex gap-2">
-          <Select value={first} onValueChange={setFirst}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {fields.map(f => (
-                <SelectItem key={f.key} value={f.key}>
-                  {f.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={second} onValueChange={setSecond}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {fields.map(f => (
-                <SelectItem key={f.key} value={f.key}>
-                  {f.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="chart-container">
-          <CompareMetricsChart
-            data={data}
-            first={first}
-            second={second}
-            firstLabel={fields.find(f => f.key === first).label}
-            secondLabel={fields.find(f => f.key === second).label}
+    <div className="space-y-4">
+      <div className="selectors flex gap-2">
+        <Select value={first} onValueChange={setFirst}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {fields.map(f => (
+              <SelectItem key={f.key} value={f.key}>
+                {f.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={second} onValueChange={setSecond}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {fields.map(f => (
+              <SelectItem key={f.key} value={f.key}>
+                {f.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={data}>
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey={first}
+            stroke="rgba(255,159,64,1)"
+            strokeWidth={2}
           />
-        </div>
-      </CardContent>
-    </Card>
+          <Line
+            type="monotone"
+            dataKey={second}
+            stroke="rgba(75,192,192,1)"
+            strokeWidth={2}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   )
 }

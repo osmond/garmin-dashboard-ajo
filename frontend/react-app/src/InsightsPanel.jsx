@@ -1,13 +1,14 @@
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from '@/components/ui/card'
-import StepsChart from '@/components/charts/StepsChart'
-import RestingHRChart from '@/components/charts/RestingHRChart'
-import Vo2MaxChart from '@/components/charts/Vo2MaxChart'
-import SleepChart from '@/components/charts/SleepChart'
+
+  AreaChart,
+  Area,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
 
 function movingAverage(data, window) {
   return data.map((_, idx) => {
@@ -49,17 +50,64 @@ export default function InsightsPanel({ weekly }) {
   )
   const corr = denom ? num / denom : 0
 
+  const chartData = weekly.map((d, idx) => ({
+    date: labels[idx],
+    sleep: sleep[idx],
+    resting: resting[idx],
+    restMA: restMA[idx],
+    vo2MA: vo2MA[idx],
+  }))
+
   return (
-    <Card className="insights">
-      <CardHeader>
-        <CardTitle>Insights</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <SleepChart data={data.map(d => ({ date: d.date, sleep_hours: d.sleep_hours_ma }))} />
-        <RestingHRChart data={data.map(d => ({ date: d.date, resting_hr: d.resting_hr_ma }))} />
-        <Vo2MaxChart data={data.map(d => ({ date: d.date, vo2max: d.vo2max_ma }))} />
-        <p>Steps vs intensity minutes correlation: {corr.toFixed(2)}</p>
-      </CardContent>
-    </Card>
+
+    <div className="space-y-4">
+      <ResponsiveContainer width="100%" height={300}>
+        <AreaChart data={chartData}>
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Area
+            type="monotone"
+            dataKey="sleep"
+            stroke="rgba(255,99,132,1)"
+            fill="rgba(255,99,132,0.1)"
+          />
+          <Area
+            type="monotone"
+            dataKey="resting"
+            stroke="rgba(54,162,235,1)"
+            fill="rgba(54,162,235,0.1)"
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+      <p>Steps vs intensity minutes correlation: {corr.toFixed(2)}</p>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={chartData}>
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey="restMA"
+            stroke="rgba(75,192,192,1)"
+            strokeWidth={2}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={chartData}>
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey="vo2MA"
+            stroke="rgba(153,102,255,1)"
+            strokeWidth={2}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+
   )
 }
