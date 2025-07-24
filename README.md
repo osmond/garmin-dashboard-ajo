@@ -1,6 +1,6 @@
 # Garmin Dashboard AJO
 
-A small dashboard that collects your Garmin activity data. The backend is an Express API that stores daily summaries in InfluxDB and exposes history endpoints. A Next.js app displays the results. Tailwind CSS and shadcn-ui are preconfigured.
+A small dashboard that collects your Garmin activity data. The backend is an Express API that stores daily summaries in InfluxDB and exposes history endpoints. The frontend lives in `frontend-next` and is a Next.js app styled with Tailwind CSS and shadcn-ui.
 
 ## Quick start
 
@@ -42,12 +42,14 @@ An additional endpoint `/api/activity/:id` returns GPX coordinates for a specifi
 
 ### Running Tests
 
-Before running tests or preparing Git hooks, install dependencies in each workspace:
+Install dependencies in the root and API workspace before running tests:
 
 ```bash
 npm install                # root dev tools
 npm install --prefix api   # API dependencies
 ```
+
+The frontend has no tests yet, so the root `npm test` script only runs the API tests.
 
 Run API tests with:
 
