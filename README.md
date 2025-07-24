@@ -26,20 +26,13 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    relative to `api/` when running `npm start`. Change `PORT` if you need a
    different API port (defaults to `3002`).
 
-3. **Run the API**
+3. **Install dependencies and start the dashboard**
 
    ```bash
-   cd api
    npm install
+   npm install --prefix api
+   npm install --prefix frontend/react-app
    npm start
-   ```
-
-4. **Run the React app** (in another terminal)
-
-   ```bash
-   cd frontend/react-app
-   npm install
-   npm run dev
    ```
 
 Vite proxies `/api` requests to your running API server. The API fetches new data each midnight and exposes a weekly history at `/api/weekly`.
