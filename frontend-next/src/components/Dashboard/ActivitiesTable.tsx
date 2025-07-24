@@ -1,14 +1,22 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import Spinner from "@/components/Spinner"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import useMockData from "@/hooks/useMockData"
 import useGarminData from "@/hooks/useGarminData"
 
 export default function ActivitiesTable() {
   const useData =
     process.env.NEXT_PUBLIC_MOCK_MODE === 'false' ? useGarminData : useMockData
-  const { data, isLoading } = useData()
+  const { data, isLoading, error } = useData()
 
   if (isLoading) return <Spinner />
+  if (error) {
+    return (
+      <Alert variant="destructive">
+        <AlertDescription>Failed to load dashboard data</AlertDescription>
+      </Alert>
+    )
+  }
   if (!data) return null
 
   return (
@@ -17,30 +25,34 @@ export default function ActivitiesTable() {
         <CardTitle>Weekly Activities</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b">
-              <tr className="text-muted-foreground">
-                <th className="py-2 pr-4">Date</th>
-                <th className="py-2 pr-4">Steps</th>
-                <th className="py-2 pr-4">Resting HR</th>
-                <th className="py-2">Sleep</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.activities.map(entry => (
-                <tr key={entry.time} className="border-b last:border-b-0">
-                  <td className="py-2 pr-4">
-                    {new Date(entry.time).toLocaleDateString()}
-                  </td>
-                  <td className="py-2 pr-4">{entry.steps}</td>
-                  <td className="py-2 pr-4">{entry.resting_hr}</td>
-                  <td className="py-2">{entry.sleep_hours} hrs</td>
+        {data.activities.length === 0 ? (
+          <>No activities yet</>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b">
+                <tr className="text-muted-foreground">
+                  <th className="py-2 pr-4">Date</th>
+                  <th className="py-2 pr-4">Steps</th>
+                  <th className="py-2 pr-4">Resting HR</th>
+                  <th className="py-2">Sleep</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {data.activities.map(entry => (
+                  <tr key={entry.time} className="border-b last:border-b-0">
+                    <td className="py-2 pr-4">
+                      {new Date(entry.time).toLocaleDateString()}
+                    </td>
+                    <td className="py-2 pr-4">{entry.steps}</td>
+                    <td className="py-2 pr-4">{entry.resting_hr}</td>
+                    <td className="py-2">{entry.sleep_hours} hrs</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

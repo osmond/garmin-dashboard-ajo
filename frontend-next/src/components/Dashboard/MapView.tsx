@@ -6,6 +6,7 @@ import { MapContainer, TileLayer, Polyline, useMap } from "react-leaflet"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Spinner from "@/components/Spinner"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import useMockData from "@/hooks/useMockData"
 import useGarminData from "@/hooks/useGarminData"
 
@@ -29,14 +30,30 @@ function HeatLayer({ points }: HeatProps) {
 export default function MapView() {
   const useData =
     process.env.NEXT_PUBLIC_MOCK_MODE === 'false' ? useGarminData : useMockData
-  const { data, isLoading } = useData()
+  const { data, isLoading, error } = useData()
   const [heat, setHeat] = useState(false)
 
   if (isLoading) return <Spinner />
+  if (error) {
+    return (
+      <Alert variant="destructive">
+        <AlertDescription>Failed to load dashboard data</AlertDescription>
+      </Alert>
+    )
+  }
   if (!data) return null
 
   const coords = data.gps?.coordinates || []
-  if (!coords.length) return null
+  if (!coords.length) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Map View</CardTitle>
+        </CardHeader>
+        <CardContent>No activities yet</CardContent>
+      </Card>
+    )
+  }
 
   const center: [number, number] = [coords[0][0], coords[0][1]]
 
