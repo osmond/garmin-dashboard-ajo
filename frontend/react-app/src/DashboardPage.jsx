@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import CalendarPanel from './CalendarPanel'
 import InsightsPanel from './InsightsPanel'
 import ComparePanel from './ComparePanel'
-import "./App.css"
 
 export default function DashboardPage() {
   const [summary, setSummary] = useState(null)
@@ -49,15 +48,23 @@ export default function DashboardPage() {
   if (!summary || !weekly || !history) return <p>Loading...</p>
 
   return (
-    <div className="dashboard">
+    <div className="flex flex-col md:flex-row gap-6 p-4">
       <CalendarPanel history={history} />
-      <div className="dashboard-main">
-        <h1>Garmin Dashboard</h1>
-        <ul className="key-metrics">
-          <li><strong>Steps:</strong> {summary.steps}</li>
-          <li><strong>Resting HR:</strong> {summary.resting_hr}</li>
-          <li><strong>VO2 Max:</strong> {summary.vo2max}</li>
-          <li><strong>Sleep:</strong> {summary.sleep_hours} hrs</li>
+      <div className="flex-1 space-y-4">
+        <h1 className="text-2xl font-bold">Garmin Dashboard</h1>
+        <ul className="grid grid-cols-2 gap-4">
+          <li>
+            <strong>Steps:</strong> {summary.steps}
+          </li>
+          <li>
+            <strong>Resting HR:</strong> {summary.resting_hr}
+          </li>
+          <li>
+            <strong>VO2 Max:</strong> {summary.vo2max}
+          </li>
+          <li>
+            <strong>Sleep:</strong> {summary.sleep_hours} hrs
+          </li>
         </ul>
         <InsightsPanel weekly={weekly} />
         <ComparePanel history={history} />
