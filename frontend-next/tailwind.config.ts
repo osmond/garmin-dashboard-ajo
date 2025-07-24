@@ -1,11 +1,17 @@
 import type { Config } from 'tailwindcss'
 
+const { themes } = require('ui')
+
 const config: Config = {
-  content: ['./src/**/*.{ts,tsx,js,jsx}'],
+  content: ['./src/**/*.{ts,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        ...themes.zinc.colors,
+      },
+    },
   },
-  plugins: [],
+  plugins: [require('ui/plugin')({ themes: ['zinc'] })],
 }
 
 export default config
