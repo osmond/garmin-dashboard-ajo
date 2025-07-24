@@ -6,6 +6,8 @@ import CalendarPanel from '@/CalendarPanel'
 import InsightsPanel from '@/InsightsPanel'
 import ComparePanel from '@/ComparePanel'
 import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
 export default function DashboardPage() {
   const [summary, setSummary] = useState<any>(null)
@@ -64,18 +66,27 @@ export default function DashboardPage() {
             <h3 className="text-lg font-semibold">Key Metrics</h3>
             <Button size="sm" onClick={loadData}>Reload</Button>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-2">
-            <div>
+          <CardContent className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
               <span className="font-semibold">Steps:</span> {summary.steps}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Progress value={(summary.steps / 10000) * 100} />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>Daily goal: 10k steps</TooltipContent>
+              </Tooltip>
             </div>
-            <div>
+            <div className="space-y-1">
               <span className="font-semibold">Resting HR:</span> {summary.resting_hr}
             </div>
-            <div>
+            <div className="space-y-1">
               <span className="font-semibold">VO₂ Max:</span> {summary.vo2max}
             </div>
-            <div>
+            <div className="space-y-1">
               <span className="font-semibold">Sleep:</span> {summary.sleep_hours} hrs
+              <Progress value={(summary.sleep_hours / 8) * 100} />
             </div>
           </CardContent>
         </Card>
