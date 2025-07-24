@@ -1,6 +1,6 @@
 # Garmin Dashboard AJO
 
-A small dashboard that collects your Garmin activity data. The backend is an Express API that stores daily summaries in InfluxDB and exposes history endpoints. A single-page React app built with Vite displays the results. Tailwind CSS and shadcn-ui are preconfigured.
+A small dashboard that collects your Garmin activity data. The backend is an Express API that stores daily summaries in InfluxDB and exposes history endpoints. A Next.js app displays the results. Tailwind CSS and shadcn-ui are preconfigured.
 
 ## Quick start
 
@@ -26,35 +26,33 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    relative to `api/` when running `npm start`. Change `PORT` if you need a
    different API port (defaults to `3002`).
 
-3. **Install dependencies and start the single-page app**
+3. **Install dependencies and start the Next.js app**
 
    ```bash
    npm install
    npm install --prefix api
-   npm install --prefix frontend
-   npm start    # starts both the API and React dev server
+   npm install --prefix frontend-next
+   npm start    # starts both the API and Next.js dev server
    ```
 
-   The React app lives in `frontend` and already includes Tailwind CSS and shadcn-ui.
+   The Next.js app lives in `frontend-next` and already includes Tailwind CSS and shadcn-ui.
 
-The single-page React app uses Vite to proxy `/api` requests to your running API server. The API fetches new data each midnight and exposes a weekly history at `/api/weekly`.
+Next.js serves pages from `frontend-next`. The API fetches new data each midnight and exposes a weekly history at `/api/weekly`.
 An additional endpoint `/api/activity/:id` returns GPX coordinates for a specific activity.
 
 ### Running Tests
 
-Before running tests or preparing Git hooks, install dependencies in each
-workspace. The frontend dependencies must be installed or `npm test` will fail:
+Before running tests or preparing Git hooks, install dependencies in each workspace:
 
 ```bash
 npm install                # root dev tools
 npm install --prefix api   # API dependencies
-npm install --prefix frontend   # React app dependencies
 ```
 
-Run all API and React tests with:
+Run API tests with:
 
 ```bash
-npm test   # runs "npm test --prefix api" and "npm test --prefix frontend"
+npm test   # runs "npm test --prefix api"
 ```
 
 ### Required environment variables
