@@ -9,9 +9,12 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import Spinner from "@/components/Spinner"
 import useMockData from "@/hooks/useMockData"
+import useGarminData from "@/hooks/useGarminData"
 
 export default function InsightsChart() {
-  const { data, isLoading } = useMockData()
+  const useData =
+    process.env.NEXT_PUBLIC_MOCK_MODE === 'false' ? useGarminData : useMockData
+  const { data, isLoading } = useData()
 
   if (isLoading) return <Spinner />
   if (!data) return null
