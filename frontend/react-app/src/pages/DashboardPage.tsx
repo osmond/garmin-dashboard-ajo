@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
-import { Card } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import CalendarPanel from '@/CalendarPanel'
 import InsightsPanel from '@/InsightsPanel'
 import ComparePanel from '@/ComparePanel'
 import { Button } from '@/components/ui/button'
+import StepsChart from '@/components/charts/StepsChart'
+import RestingHRChart from '@/components/charts/RestingHRChart'
+import Vo2MaxChart from '@/components/charts/Vo2MaxChart'
+import SleepChart from '@/components/charts/SleepChart'
 
 export default function DashboardPage() {
   const [summary, setSummary] = useState<any>(null)
@@ -65,6 +69,41 @@ export default function DashboardPage() {
           </ul>
         </Card>
         <InsightsPanel weekly={weekly} />
+      </section>
+
+      <section className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Daily Steps</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <StepsChart data={weekly.map(d => ({ date: new Date(d.time).toLocaleDateString(), steps: d.steps }))} />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Resting HR</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RestingHRChart data={weekly.map(d => ({ date: new Date(d.time).toLocaleDateString(), resting_hr: d.resting_hr }))} />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>VO2 Max</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Vo2MaxChart data={weekly.map(d => ({ date: new Date(d.time).toLocaleDateString(), vo2max: d.vo2max }))} />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Sleep Duration</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <SleepChart data={weekly.map(d => ({ date: new Date(d.time).toLocaleDateString(), sleep_hours: d.sleep_hours }))} />
+          </CardContent>
+        </Card>
       </section>
 
       <section className="mb-6">
