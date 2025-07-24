@@ -9,15 +9,19 @@ import GoalsRing from '@/components/Dashboard/GoalsRing'
 import MapView from '@/components/Dashboard/MapView'
 import InsightsChart from '@/components/Dashboard/InsightsChart'
 import ActivitiesTable from '@/components/Dashboard/ActivitiesTable'
+import Header from '@/components/Header'
 
 export default function HomePage() {
   return (
     <main className="p-6 md:p-10 max-w-screen-lg mx-auto space-y-6">
-      <h1 className="text-2xl font-semibold">Garmin Dashboard</h1>
+      <Header />
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList>
+        <TabsList className="flex flex-wrap gap-2">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="activities">Activities</TabsTrigger>
+          <TabsTrigger value="insights">Insights</TabsTrigger>
+          <TabsTrigger value="goals">Goals</TabsTrigger>
+          <TabsTrigger value="map">Map</TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -37,6 +41,15 @@ export default function HomePage() {
         </TabsContent>
         <TabsContent value="activities">
           <ActivitiesTable />
+        </TabsContent>
+        <TabsContent value="insights">
+          <InsightsChart />
+        </TabsContent>
+        <TabsContent value="goals">
+          <GoalsRing />
+        </TabsContent>
+        <TabsContent value="map">
+          <MapView />
         </TabsContent>
       </Tabs>
     </main>
