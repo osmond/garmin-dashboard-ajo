@@ -1,58 +1,13 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Garmin Dashboard</title>
-  <style>
-    body { font-family: sans-serif; margin: 2rem; }
-    h1 { color: rgb(79, 195, 247); }
-    .chart-container { max-width: 600px; }
-  </style>
-</head>
-<body>
-  <h1>Garmin Dashboard</h1>
-  <div id="summary"></div>
-  <canvas id="weeklyChart" class="chart-container"></canvas>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    Promise.all([
-      fetch('/api/summary').then(async r => {
-        if (!r.ok) {
-          throw new Error(await r.text())
-        }
-        return r.json()
-      }),
-      fetch('/api/weekly').then(async r => {
-        if (!r.ok) {
-          throw new Error(await r.text())
-        }
-        return r.json()
-      })
-    ]).then(([data, weekly]) => {
-      document.getElementById('summary').innerHTML = `
-        <p><strong>Steps:</strong> ${data.steps}</p>
-        <p><strong>Resting HR:</strong> ${data.resting_hr}</p>
-        <p><strong>VO2 Max:</strong> ${data.vo2max}</p>
-        <p><strong>Sleep:</strong> ${data.sleep_hours} hrs</p>
-      `;
-      const weeklyData = {
-        labels: weekly.map(d => new Date(d.time).toLocaleDateString()),
-        datasets: [{
-          label: 'Steps',
-          data: weekly.map(d => d.steps),
-          fill: true,
-          backgroundColor: 'rgba(40,167,69,0.1)',
-          borderColor: 'rgba(40,167,69,1)',
-          tension: 0.3
-        }]
-      };
-      new Chart(document.getElementById('weeklyChart'), {
-        type: 'line',
-        data: weeklyData,
-        options: { responsive: true, scales: { y: { beginAtZero: true } } }
-      });
-    });
-  </script>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Garmin Dashboard</title>
+  </head>
+  <body class="bg-background text-foreground">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

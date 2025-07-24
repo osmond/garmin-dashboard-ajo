@@ -31,7 +31,7 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    ```bash
    npm install
    npm install --prefix api
-   npm install --prefix frontend/react-app
+   npm install --prefix frontend
    npm start
    ```
 
@@ -46,13 +46,13 @@ workspace. The frontend dependencies must be installed or `npm test` will fail:
 ```bash
 npm install                # root dev tools
 npm install --prefix api   # API dependencies
-npm install --prefix frontend/react-app   # React app dependencies
+npm install --prefix frontend   # React app dependencies
 ```
 
 Run all API and React tests with:
 
 ```bash
-npm test   # runs "npm test --prefix api" and "npm test --prefix frontend/react-app"
+npm test   # runs "npm test --prefix api" and "npm test --prefix frontend"
 ```
 
 ### Required environment variables
