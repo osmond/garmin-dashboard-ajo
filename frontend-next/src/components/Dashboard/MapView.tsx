@@ -5,6 +5,7 @@ import "leaflet.heat"
 import { MapContainer, TileLayer, Polyline, useMap } from "react-leaflet"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import Spinner from "@/components/Spinner"
 import useMockData from "@/hooks/useMockData"
 
 interface HeatProps {
@@ -28,7 +29,8 @@ export default function MapView() {
   const { data, isLoading } = useMockData()
   const [heat, setHeat] = useState(false)
 
-  if (isLoading || !data) return null
+  if (isLoading) return <Spinner />
+  if (!data) return null
 
   const coords = data.gps?.coordinates || []
   if (!coords.length) return null

@@ -7,12 +7,14 @@ import {
   ResponsiveContainer,
 } from "recharts"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import Spinner from "@/components/Spinner"
 import useMockData from "@/hooks/useMockData"
 
 export default function InsightsChart() {
   const { data, isLoading } = useMockData()
 
-  if (isLoading || !data) return null
+  if (isLoading) return <Spinner />
+  if (!data) return null
 
   const chartData = data.activities.map(d => ({
     name: new Date(d.time).toLocaleDateString(undefined, {

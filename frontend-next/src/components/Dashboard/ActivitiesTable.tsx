@@ -1,10 +1,12 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import Spinner from "@/components/Spinner"
 import useMockData from "@/hooks/useMockData"
 
 export default function ActivitiesTable() {
   const { data, isLoading } = useMockData()
 
-  if (isLoading || !data) return null
+  if (isLoading) return <Spinner />
+  if (!data) return null
 
   return (
     <Card>
