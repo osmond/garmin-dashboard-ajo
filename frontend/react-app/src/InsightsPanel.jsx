@@ -50,10 +50,10 @@ export default function InsightsPanel({ weekly }) {
   )
   const corr = denom ? num / denom : 0
 
-  const chartData = weekly.map((d, idx) => ({
-    date: labels[idx],
-    sleep: sleep[idx],
-    resting: resting[idx],
+  const chartData = data.map((d, idx) => ({
+    date: d.date,
+    sleep: d.sleep_hours,
+    resting: d.resting_hr,
     restMA: restMA[idx],
     vo2MA: vo2MA[idx],
   }))
