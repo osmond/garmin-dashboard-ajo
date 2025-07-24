@@ -1,9 +1,17 @@
 import { useEffect, useState } from 'react'
+
 import { Card, CardHeader, CardContent } from '@/components/ui/card'
+
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+
 import CalendarPanel from '@/CalendarPanel'
 import InsightsPanel from '@/InsightsPanel'
 import ComparePanel from '@/ComparePanel'
 import { Button } from '@/components/ui/button'
+import StepsChart from '@/components/charts/StepsChart'
+import RestingHRChart from '@/components/charts/RestingHRChart'
+import Vo2MaxChart from '@/components/charts/Vo2MaxChart'
+import SleepChart from '@/components/charts/SleepChart'
 
 export default function DashboardPage() {
   const [summary, setSummary] = useState<any>(null)
@@ -79,6 +87,7 @@ export default function DashboardPage() {
         </Card>
       </section>
 
+
       <section className="grid md:grid-cols-2 gap-6 mb-10">
         <Card>
           <CardHeader>
@@ -86,16 +95,19 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <InsightsPanel weekly={weekly} />
+
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
+
             <h3 className="text-lg font-semibold">Compare Metrics</h3>
           </CardHeader>
           <CardContent>
             <ComparePanel history={history} />
           </CardContent>
         </Card>
+
       </section>
     </main>
   )

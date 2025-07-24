@@ -1,9 +1,8 @@
 /* global global */
 import { render, screen } from '@testing-library/react';
-import App from './App';
 import { vi as viFn, describe, it, expect } from 'vitest';
 
-viFn.mock('react-chartjs-2', () => ({ Line: () => <div>Chart</div> }));
+import App from './App';
 
 viFn.mock('react-calendar', () => ({ default: () => <div>Calendar</div> }));
 

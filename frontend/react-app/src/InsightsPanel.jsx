@@ -1,4 +1,5 @@
 import {
+
   AreaChart,
   Area,
   LineChart,
@@ -21,22 +22,31 @@ function movingAverage(data, window) {
 export default function InsightsPanel({ weekly }) {
   if (!weekly?.length) return null
 
-  const labels = weekly.map(d => new Date(d.time).toLocaleDateString())
-  const sleep = weekly.map(d => d.sleep_hours)
-  const resting = weekly.map(d => d.resting_hr)
-  const vo2 = weekly.map(d => d.vo2max)
-  const steps = weekly.map(d => d.steps)
-  const intensity = steps.map(s => s / 100)
+  const data = weekly.map(d => ({
+    date: new Date(d.time).toLocaleDateString(),
+    ...d,
+    intensity: d.steps / 100,
+  }))
 
-  const restMA = movingAverage(resting, 3)
-  const vo2MA = movingAverage(vo2, 3)
+  const restMA = movingAverage(data.map(d => d.resting_hr), 3)
+  const vo2MA = movingAverage(data.map(d => d.vo2max), 3)
+  const sleepMA = movingAverage(data.map(d => d.sleep_hours), 3)
 
-  const meanSteps = steps.reduce((a, b) => a + b, 0) / steps.length
-  const meanInt = intensity.reduce((a, b) => a + b, 0) / intensity.length
-  const num = steps.reduce((sum, s, i) => sum + (s - meanSteps) * (intensity[i] - meanInt), 0)
+  data.forEach((d, i) => {
+    d.resting_hr_ma = restMA[i]
+    d.vo2max_ma = vo2MA[i]
+    d.sleep_hours_ma = sleepMA[i]
+  })
+
+  const meanSteps = data.reduce((a, b) => a + b.steps, 0) / data.length
+  const meanInt = data.reduce((a, b) => a + b.intensity, 0) / data.length
+  const num = data.reduce(
+    (sum, d) => sum + (d.steps - meanSteps) * (d.intensity - meanInt),
+    0
+  )
   const denom = Math.sqrt(
-    steps.reduce((sum, s) => sum + (s - meanSteps) ** 2, 0) *
-      intensity.reduce((sum, x) => sum + (x - meanInt) ** 2, 0)
+    data.reduce((s, d) => s + (d.steps - meanSteps) ** 2, 0) *
+      data.reduce((s, d) => s + (d.intensity - meanInt) ** 2, 0)
   )
   const corr = denom ? num / denom : 0
 
@@ -49,6 +59,7 @@ export default function InsightsPanel({ weekly }) {
   }))
 
   return (
+
     <div className="space-y-4">
       <ResponsiveContainer width="100%" height={300}>
         <AreaChart data={chartData}>
@@ -97,6 +108,6 @@ export default function InsightsPanel({ weekly }) {
         </LineChart>
       </ResponsiveContainer>
     </div>
+
   )
 }
-
