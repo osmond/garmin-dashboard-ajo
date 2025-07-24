@@ -31,7 +31,8 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    ```bash
    npm install
    npm install --prefix api
-   npm install --prefix frontend-next
+   # Storybook requires older peer dependencies
+   npm install --legacy-peer-deps --prefix frontend-next
    # runs both servers concurrently
    npm start
    ```
@@ -61,7 +62,7 @@ Install dependencies in the root and workspaces before running tests:
 ```bash
 npm install                # root dev tools
 npm install --prefix api            # API dependencies
-npm install --prefix frontend-next  # frontend dependencies
+npm install --legacy-peer-deps --prefix frontend-next  # frontend dependencies
 ```
 
 Run all tests from the repository root:
