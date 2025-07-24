@@ -11,7 +11,7 @@ export default function OverviewCard() {
   if (isLoading) return <Spinner />
   if (!data) return null
 
-  const { metrics } = data
+  const { metrics, stepsHistory, hrZones, sleepStages, vo2History } = data
 
   return (
     <Card>
@@ -31,6 +31,18 @@ export default function OverviewCard() {
           </li>
           <li>
             <span className="font-semibold">Sleep:</span> {metrics.sleep_hours} hrs
+          </li>
+          <li>
+            <span className="font-semibold">Steps History:</span> {stepsHistory.join(', ')}
+          </li>
+          <li>
+            <span className="font-semibold">HR Zones:</span> {hrZones.join(', ')}
+          </li>
+          <li>
+            <span className="font-semibold">Sleep Stages:</span> {sleepStages.join(', ')}
+          </li>
+          <li>
+            <span className="font-semibold">VO₂ History:</span> {vo2History.join(', ')}
           </li>
         </ul>
       </CardContent>

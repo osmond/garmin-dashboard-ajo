@@ -5,6 +5,10 @@
     "vo2max": 50,
     "sleep_hours": 7.5
   },
+  "stepsHistory": [10000, 11000, 9000, 12000, 8000, 13000, 10000],
+  "hrZones": [20, 40, 30, 10],
+  "sleepStages": [3, 4, 2, 1],
+  "vo2History": [49, 50, 50, 50, 51, 50, 50],
   "activities": [
     { "time": "2024-05-01T00:00:00Z", "steps": 10000, "resting_hr": 60, "vo2max": 50, "sleep_hours": 7.0 },
     { "time": "2024-05-02T00:00:00Z", "steps": 11000, "resting_hr": 61, "vo2max": 50, "sleep_hours": 7.2 },

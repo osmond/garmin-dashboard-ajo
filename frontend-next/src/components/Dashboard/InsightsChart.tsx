@@ -19,12 +19,9 @@ export default function InsightsChart() {
   if (isLoading) return <Spinner />
   if (!data) return null
 
-  const chartData = data.activities.map(d => ({
-    name: new Date(d.time).toLocaleDateString(undefined, {
-      month: "short",
-      day: "numeric",
-    }),
-    steps: d.steps,
+  const chartData = data.stepsHistory.map((steps, i) => ({
+    name: `Day ${i + 1}`,
+    steps,
   }))
 
   return (
