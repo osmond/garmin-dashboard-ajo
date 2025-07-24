@@ -31,11 +31,11 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    ```bash
    npm install
    npm install --prefix api
-   npm install --prefix frontend/react-app
+   npm install --prefix frontend
    npm start    # starts both the API and React dev server
    ```
 
-   The React app lives in `frontend/react-app` and already includes Tailwind CSS and shadcn-ui.
+   The React app lives in `frontend` and already includes Tailwind CSS and shadcn-ui.
 
 The single-page React app uses Vite to proxy `/api` requests to your running API server. The API fetches new data each midnight and exposes a weekly history at `/api/weekly`.
 An additional endpoint `/api/activity/:id` returns GPX coordinates for a specific activity.
@@ -48,13 +48,13 @@ workspace. The frontend dependencies must be installed or `npm test` will fail:
 ```bash
 npm install                # root dev tools
 npm install --prefix api   # API dependencies
-npm install --prefix frontend/react-app   # React app dependencies
+npm install --prefix frontend   # React app dependencies
 ```
 
 Run all API and React tests with:
 
 ```bash
-npm test   # runs "npm test --prefix api" and "npm test --prefix frontend/react-app"
+npm test   # runs "npm test --prefix api" and "npm test --prefix frontend"
 ```
 
 ### Required environment variables
