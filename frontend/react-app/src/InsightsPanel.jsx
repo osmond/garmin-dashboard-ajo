@@ -1,7 +1,13 @@
-import { Line } from 'react-chartjs-2'
-import { Chart, LineElement, PointElement, LinearScale, CategoryScale, Filler } from 'chart.js'
-
-Chart.register(LineElement, PointElement, LinearScale, CategoryScale, Filler)
+import {
+  AreaChart,
+  Area,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
 
 function movingAverage(data, window) {
   return data.map((_, idx) => {
@@ -34,73 +40,63 @@ export default function InsightsPanel({ weekly }) {
   )
   const corr = denom ? num / denom : 0
 
+  const chartData = weekly.map((d, idx) => ({
+    date: labels[idx],
+    sleep: sleep[idx],
+    resting: resting[idx],
+    restMA: restMA[idx],
+    vo2MA: vo2MA[idx],
+  }))
+
   return (
-    <aside className="insights">
-      <h2>Insights</h2>
-      <div className="chart-container">
-        <Line
-          data={{
-            labels,
-            datasets: [
-              {
-                label: 'Sleep (hrs)',
-                data: movingAverage(sleep, 3),
-                borderColor: 'rgba(255,99,132,1)',
-                backgroundColor: 'rgba(255,99,132,0.1)',
-                tension: 0.3,
-                fill: true,
-              },
-              {
-                label: 'Resting HR',
-                data: restMA,
-                borderColor: 'rgba(54,162,235,1)',
-                backgroundColor: 'rgba(54,162,235,0.1)',
-                tension: 0.3,
-                fill: true,
-              },
-            ],
-          }}
-          options={{ responsive: true, scales: { y: { beginAtZero: true } } }}
-        />
-      </div>
+    <div className="space-y-4">
+      <ResponsiveContainer width="100%" height={300}>
+        <AreaChart data={chartData}>
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Area
+            type="monotone"
+            dataKey="sleep"
+            stroke="rgba(255,99,132,1)"
+            fill="rgba(255,99,132,0.1)"
+          />
+          <Area
+            type="monotone"
+            dataKey="resting"
+            stroke="rgba(54,162,235,1)"
+            fill="rgba(54,162,235,0.1)"
+          />
+        </AreaChart>
+      </ResponsiveContainer>
       <p>Steps vs intensity minutes correlation: {corr.toFixed(2)}</p>
-      <div className="chart-container">
-        <Line
-          data={{
-            labels,
-            datasets: [
-              {
-                label: 'Resting HR MA',
-                data: restMA,
-                borderColor: 'rgba(75,192,192,1)',
-                backgroundColor: 'rgba(75,192,192,0.1)',
-                tension: 0.3,
-                fill: true,
-              },
-            ],
-          }}
-          options={{ responsive: true, scales: { y: { beginAtZero: true } } }}
-        />
-      </div>
-      <div className="chart-container">
-        <Line
-          data={{
-            labels,
-            datasets: [
-              {
-                label: 'VO2 Max MA',
-                data: vo2MA,
-                borderColor: 'rgba(153,102,255,1)',
-                backgroundColor: 'rgba(153,102,255,0.1)',
-                tension: 0.3,
-                fill: true,
-              },
-            ],
-          }}
-          options={{ responsive: true, scales: { y: { beginAtZero: true } } }}
-        />
-      </div>
-    </aside>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={chartData}>
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey="restMA"
+            stroke="rgba(75,192,192,1)"
+            strokeWidth={2}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={chartData}>
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey="vo2MA"
+            stroke="rgba(153,102,255,1)"
+            strokeWidth={2}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   )
 }
 

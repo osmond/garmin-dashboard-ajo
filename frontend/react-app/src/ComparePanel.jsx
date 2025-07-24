@@ -1,6 +1,12 @@
 import { useState } from 'react'
-import { Line } from 'react-chartjs-2'
-import { Chart, LineElement, PointElement, LinearScale, CategoryScale, Filler } from 'chart.js'
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
 
 import {
   Select,
@@ -9,8 +15,6 @@ import {
   SelectContent,
   SelectItem,
 } from './components/ui/select'
-
-Chart.register(LineElement, PointElement, LinearScale, CategoryScale, Filler)
 
 const fields = [
   { key: 'steps', label: 'Steps' },
@@ -25,14 +29,14 @@ export default function ComparePanel({ history }) {
 
   if (!history?.length) return null
 
-  const labels = history.map(d => new Date(d.time).toLocaleDateString())
-
-  const dataset = key => history.map(d => d[key])
+  const data = history.map(d => ({
+    date: new Date(d.time).toLocaleDateString(),
+    ...d,
+  }))
 
   return (
-    <div className="compare-panel">
-      <h2>Compare Metrics</h2>
-      <div className="selectors">
+    <div className="space-y-4">
+      <div className="selectors flex gap-2">
         <Select value={first} onValueChange={setFirst}>
           <SelectTrigger>
             <SelectValue />
@@ -58,32 +62,25 @@ export default function ComparePanel({ history }) {
           </SelectContent>
         </Select>
       </div>
-      <div className="chart-container">
-        <Line
-          data={{
-            labels,
-            datasets: [
-              {
-                label: fields.find(f => f.key === first).label,
-                data: dataset(first),
-                borderColor: 'rgba(255,159,64,1)',
-                backgroundColor: 'rgba(255,159,64,0.1)',
-                tension: 0.3,
-                fill: true,
-              },
-              {
-                label: fields.find(f => f.key === second).label,
-                data: dataset(second),
-                borderColor: 'rgba(75,192,192,1)',
-                backgroundColor: 'rgba(75,192,192,0.1)',
-                tension: 0.3,
-                fill: true,
-              },
-            ],
-          }}
-          options={{ responsive: true, scales: { y: { beginAtZero: true } } }}
-        />
-      </div>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={data}>
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey={first}
+            stroke="rgba(255,159,64,1)"
+            strokeWidth={2}
+          />
+          <Line
+            type="monotone"
+            dataKey={second}
+            stroke="rgba(75,192,192,1)"
+            strokeWidth={2}
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   )
 }
