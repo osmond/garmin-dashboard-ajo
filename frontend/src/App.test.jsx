@@ -12,11 +12,19 @@ describe('App', () => {
       vo2max: 50,
       sleep_hours: 8,
     }
-    global.fetch = viFn.fn().mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(summary),
-      text: () => Promise.resolve(''),
-    })
+    const history = []
+    global.fetch = viFn
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(summary),
+        text: () => Promise.resolve(''),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(history),
+        text: () => Promise.resolve(''),
+      })
     render(<App />)
     await screen.findByText('100')
     await screen.findByText('60')
