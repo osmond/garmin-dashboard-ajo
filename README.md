@@ -57,15 +57,6 @@ Run all API and React tests with:
 npm test   # runs "npm test --prefix api" and "npm test --prefix frontend"
 ```
 
-### Running scripts
-
-Node scripts expect environment variables from `.env`. You can load them using
-`dotenv-cli`:
-
-```bash
-npx dotenv -e .env -- node scripts/backfill-garmin-history.js --days 30
-```
-
 ### Required environment variables
 
 - `GARMIN_EMAIL` and `GARMIN_PASSWORD` for `save-garmin-session.js`
@@ -83,10 +74,6 @@ node scripts/backfill-garmin-history.js 2024-01-01 2024-01-07
 # or backfill the last 30 days
 node scripts/backfill-garmin-history.js --days 30
 ```
-
-This script requires the same environment configuration as the main API.
-Ensure your `.env` file contains valid `INFLUX_URL`, `INFLUX_TOKEN`,
-`INFLUX_ORG`, `INFLUX_BUCKET` and `GARMIN_COOKIE_PATH` values before running it.
 
 ## License
 
