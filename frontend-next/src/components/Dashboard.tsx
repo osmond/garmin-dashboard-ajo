@@ -3,10 +3,22 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import HistoryChart from '@/components/HistoryChart'
 
+interface Summary {
+  steps: number
+  resting_hr: number
+  vo2max: number
+  sleep_hours: number
+}
+
+interface HistoryEntry {
+  time: string
+  steps: number
+}
+
 export default function Dashboard() {
-  const [summary, setSummary] = useState(null)
-  const [history, setHistory] = useState([])
-  const [error, setError] = useState(null)
+  const [summary, setSummary] = useState<Summary | null>(null)
+  const [history, setHistory] = useState<HistoryEntry[]>([])
+  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
   async function load() {
@@ -22,7 +34,7 @@ export default function Dashboard() {
       setHistory(await historyRes.json())
       setError(null)
     } catch (err) {
-      setError(err.message)
+      setError((err as Error).message)
     } finally {
       setLoading(false)
     }

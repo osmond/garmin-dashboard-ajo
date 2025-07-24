@@ -7,7 +7,12 @@ import {
   ResponsiveContainer
 } from 'recharts'
 
-export default function HistoryChart({ data }) {
+interface ChartData {
+  name: string
+  steps: number
+}
+
+export default function HistoryChart({ data }: { data: ChartData[] }) {
   if (!data || !data.length) return null
 
   return (
