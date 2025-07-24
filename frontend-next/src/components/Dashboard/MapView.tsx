@@ -1,26 +1,57 @@
-import Image from "next/image"
+import { useState, useEffect } from "react"
+import L from "leaflet"
+import "leaflet/dist/leaflet.css"
+import "leaflet.heat"
+import { MapContainer, TileLayer, Polyline, useMap } from "react-leaflet"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import useMockData from "@/hooks/useMockData"
+
+interface HeatProps {
+  points: [number, number][]
+}
+
+function HeatLayer({ points }: HeatProps) {
+  const map = useMap()
+  useEffect(() => {
+    if (!map) return
+    const layer = (L as any).heatLayer(points, { radius: 25 })
+    layer.addTo(map)
+    return () => {
+      map.removeLayer(layer)
+    }
+  }, [map, points])
+  return null
+}
 
 export default function MapView() {
   const { data, isLoading } = useMockData()
+  const [heat, setHeat] = useState(false)
 
   if (isLoading || !data) return null
 
-  const latest = data.weekly[0]
+  const coords = data.gps?.coordinates || []
+  if (!coords.length) return null
+
+  const center: [number, number] = [coords[0][0], coords[0][1]]
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex items-center justify-between">
         <CardTitle>Map View</CardTitle>
+        <Button size="sm" variant="outline" onClick={() => setHeat(h => !h)}>
+          {heat ? "Show Route" : "Show Heatmap"}
+        </Button>
       </CardHeader>
-      <CardContent className="flex flex-col items-center gap-2">
-        <Image src="/globe.svg" alt="Map" width={120} height={120} />
-        {latest && (
-          <p className="text-sm text-muted-foreground">
-            Showing data for {new Date(latest.time).toLocaleDateString()}
-          </p>
-        )}
+      <CardContent className="h-64">
+        <MapContainer center={center} zoom={15} className="h-full w-full">
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {heat ? (
+            <HeatLayer points={coords} />
+          ) : (
+            <Polyline positions={coords} color="blue" />
+          )}
+        </MapContainer>
       </CardContent>
     </Card>
   )
