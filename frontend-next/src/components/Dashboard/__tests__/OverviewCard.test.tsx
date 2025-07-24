@@ -15,6 +15,6 @@ afterEach(() => {
 
 test('renders the step count from mockData', async () => {
   render(<OverviewCard />)
-  const stepItem = await screen.findByText(String(mockData.summary.steps))
+  const stepItem = await screen.findByText(String(mockData.metrics.steps))
   expect(stepItem).toBeInTheDocument()
 })

@@ -23,7 +23,7 @@ export default function ActivitiesTable() {
               </tr>
             </thead>
             <tbody>
-              {data.weekly.map(entry => (
+              {data.activities.map(entry => (
                 <tr key={entry.time} className="border-b last:border-b-0">
                   <td className="py-2 pr-4">
                     {new Date(entry.time).toLocaleDateString()}

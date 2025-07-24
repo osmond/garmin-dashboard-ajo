@@ -1,13 +1,14 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import useMockData from "@/hooks/useMockData"
 
-export default function GoalsRing({ goal = 10000 }: { goal?: number }) {
+export default function GoalsRing({ goal }: { goal?: number }) {
   const { data, isLoading } = useMockData()
 
   if (isLoading || !data) return null
 
-  const steps = data.summary.steps
-  const pct = Math.min((steps / goal) * 100, 100)
+  const steps = data.metrics.steps
+  const stepGoal = goal ?? data.goals.steps
+  const pct = Math.min((steps / stepGoal) * 100, 100)
   const radius = 52
   const circ = 2 * Math.PI * radius
   const offset = circ - (pct / 100) * circ
