@@ -26,36 +26,61 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    relative to `api/` when running `npm start`. Change `PORT` if you need a
    different API port (defaults to `3002`).
 
-3. **Install dependencies and start the Next.js app**
+3. **Install dependencies and start the app**
 
    ```bash
    npm install
    npm install --prefix api
    npm install --prefix frontend-next
-   npm start    # starts both the API and Next.js dev server
+   # runs both servers concurrently
+   npm start
    ```
 
-   The Next.js app lives in `frontend-next` and already includes Tailwind CSS and shadcn-ui.
+   This starts the Express API on port `3002` and the Next.js dev server on
+   port `3000`. The Next.js app lives in `frontend-next` and already includes
+   Tailwind CSS and shadcn-ui.
 
 Next.js serves pages from `frontend-next`. The API fetches new data each midnight and exposes a weekly history at `/api/weekly`.
 An additional endpoint `/api/activity/:id` returns GPX coordinates for a specific activity.
 
+### Mock mode
+
+The dashboard defaults to loading sample data from `frontend-next/src/data/mockData.json` via the
+`useMockData` hook. When the environment variable `NEXT_PUBLIC_MOCK_MODE` is set to `false`
+in `.env`, `useMockData` is bypassed and the frontend fetches live data from the API endpoints
+(`/api/summary`, `/api/weekly`, etc.). Restart the app after changing this variable.
+
 ### Running Tests
 
-Install dependencies in the root and API workspace before running tests:
+Install dependencies in the root and workspaces before running tests:
 
 ```bash
 npm install                # root dev tools
-npm install --prefix api   # API dependencies
+npm install --prefix api            # API dependencies
+npm install --prefix frontend-next  # frontend dependencies
 ```
 
-The frontend has no tests yet, so the root `npm test` script only runs the API tests.
-
-Run API tests with:
+Run all tests from the repository root:
 
 ```bash
-npm test   # runs "npm test --prefix api"
+npm test   # runs API and frontend tests
 ```
+
+Run just the API or frontend tests with:
+
+```bash
+npm test --prefix api
+npm test --prefix frontend-next
+```
+
+### Storybook
+
+Run Storybook to preview isolated UI components:
+
+```bash
+npm run storybook --prefix frontend-next
+```
+
 
 ### Required environment variables
 
