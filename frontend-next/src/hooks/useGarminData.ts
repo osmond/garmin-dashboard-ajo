@@ -39,6 +39,10 @@ export default function useGarminData() {
           activities: weekly,
           goals: { steps: 10000, sleep_hours: 8 },
           gps,
+          stepsHistory: weekly.map(d => d.steps),
+          hrZones: [],
+          sleepStages: [],
+          vo2History: weekly.map(d => d.vo2max ?? 0),
         })
         setError(null)
       } catch (err) {
