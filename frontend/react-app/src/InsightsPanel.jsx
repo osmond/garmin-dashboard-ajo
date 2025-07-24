@@ -28,9 +28,16 @@ export default function InsightsPanel({ weekly }) {
     intensity: d.steps / 100,
   }))
 
-  const restMA = movingAverage(data.map(d => d.resting_hr), 3)
-  const vo2MA = movingAverage(data.map(d => d.vo2max), 3)
-  const sleepMA = movingAverage(data.map(d => d.sleep_hours), 3)
+  const labels = data.map(d => d.date)
+  const sleep = data.map(d => d.sleep_hours)
+  const resting = data.map(d => d.resting_hr)
+  const vo2 = data.map(d => d.vo2max)
+  const steps = data.map(d => d.steps)
+  const intensity = data.map(d => d.intensity)
+
+  const restMA = movingAverage(resting, 3)
+  const vo2MA = movingAverage(vo2, 3)
+  const sleepMA = movingAverage(sleep, 3)
 
   data.forEach((d, i) => {
     d.resting_hr_ma = restMA[i]
