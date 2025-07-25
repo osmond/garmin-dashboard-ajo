@@ -14,7 +14,7 @@ import SessionStatus from '@/components/SessionStatus'
 
 export default function HomePage() {
   return (
-    <main className="p-6 md:p-10 max-w-screen-lg mx-auto space-y-6">
+    <main className="mx-auto max-w-screen-lg space-y-6 p-6 md:p-10">
       <Header />
       <SessionStatus />
       <Tabs defaultValue="overview" className="space-y-6">

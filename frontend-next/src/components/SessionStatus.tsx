@@ -8,7 +8,7 @@ export default function SessionStatus() {
       try {
         const res = await fetch('/api/summary')
         if (!res.ok) throw new Error(await res.text())
-      } catch (err) {
+      } catch {
         setMessage(
           'Garmin session expired or API unreachable. Run `npm run setup` to refresh your session.'
         )

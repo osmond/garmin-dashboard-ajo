@@ -22,7 +22,7 @@ export default function HistoryChart({ data, goal }: Props) {
   if (!data || !data.length) return null
 
   return (
-    <div className="w-full h-48">
+    <div className="h-48 w-full">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
           <defs>
