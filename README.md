@@ -40,10 +40,10 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    ```
 
    Set `GARMIN_COOKIE_PATH` to the session file and fill in the InfluxDB
-   options. The path must be absolute (for example
-   `GARMIN_COOKIE_PATH=$HOME/garmin_session.json`) or it will be resolved
-   relative to `api/` when running `npm start`. Change `PORT` if you need a
-   different API port (defaults to `3002`).
+   options. The value **must** be an absolute path, for example
+   `GARMIN_COOKIE_PATH=$HOME/garmin_session.json`. Login will fail if the
+   path is not absolute. Change `PORT` if you need a different API
+   port (defaults to `3002`).
 
 3. **Install dependencies and start the frontend-next app**
 

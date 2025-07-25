@@ -2,6 +2,7 @@
 const { GarminConnect } = require('garmin-connect');
 const { InfluxDB, Point } = require('@influxdata/influxdb-client');
 const fs = require('fs');
+const path = require('path');
 const { XMLParser } = require('fast-xml-parser');
 
 const gcClient = new GarminConnect({ username: '', password: '' });
@@ -9,6 +10,9 @@ const gcClient = new GarminConnect({ username: '', password: '' });
 async function login() {
   if (!process.env.GARMIN_COOKIE_PATH) {
     throw new Error('GARMIN_COOKIE_PATH is required');
+  }
+  if (!path.isAbsolute(process.env.GARMIN_COOKIE_PATH)) {
+    throw new Error('GARMIN_COOKIE_PATH must be an absolute path');
   }
   try {
     await fs.promises.access(process.env.GARMIN_COOKIE_PATH);
