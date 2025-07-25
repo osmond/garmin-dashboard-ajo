@@ -35,6 +35,9 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    npm start    # starts both the API and Next.js dev server
    ```
 
+   The repository uses **npm** for the Next.js frontend. Any yarn lockfile
+   has been removed to avoid CI warnings.
+
    Storybook only supports React up to v18, so installing the `frontend-next`
    package with React 19 requires the `--legacy-peer-deps` (or `--force`)
    option.
