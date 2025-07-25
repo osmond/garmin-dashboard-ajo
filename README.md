@@ -31,9 +31,13 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    ```bash
    npm install
    npm install --prefix api
-  npm install --prefix frontend-next
-  npm start    # starts both the API and Next.js dev server
+   npm install --legacy-peer-deps --prefix frontend-next
+   npm start    # starts both the API and Next.js dev server
    ```
+
+   Storybook only supports React up to v18, so installing the `frontend-next`
+   package with React 19 requires the `--legacy-peer-deps` (or `--force`)
+   option.
 
   The `frontend-next` directory contains a Next.js app.
 An additional endpoint `/api/activity/:id` returns GPX coordinates for a specific activity.
@@ -46,8 +50,11 @@ workspace. The frontend-next dependencies must be installed or `npm test` will f
 ```bash
 npm install                # root dev tools
 npm install --prefix api   # API dependencies
-npm install --prefix frontend-next   # React app dependencies
+npm install --legacy-peer-deps --prefix frontend-next   # React app dependencies
 ```
+
+The same `--legacy-peer-deps` flag is required here to avoid Storybook's
+React peer dependency warnings.
 
 Run all API and React tests with:
 
