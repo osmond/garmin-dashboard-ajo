@@ -1,8 +1,8 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import Spinner from "@/components/Spinner"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import useMockData from "@/hooks/useMockData"
-import useGarminData from "@/hooks/useGarminData"
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import Spinner from '@/components/Spinner'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import useMockData from '@/hooks/useMockData'
+import useGarminData from '@/hooks/useGarminData'
 
 export default function ActivitiesTable() {
   const useData =
@@ -13,7 +13,10 @@ export default function ActivitiesTable() {
   if (error) {
     return (
       <Alert variant="destructive">
-        <AlertDescription>Failed to load dashboard data</AlertDescription>
+        <AlertDescription>
+          Failed to load dashboard data: {error}. Ensure your Garmin session is
+          valid.
+        </AlertDescription>
       </Alert>
     )
   }
@@ -28,30 +31,49 @@ export default function ActivitiesTable() {
         {data.activities.length === 0 ? (
           <>No activities yet</>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="border-b">
-                <tr className="text-muted-foreground">
-                  <th className="py-2 pr-4">Date</th>
-                  <th className="py-2 pr-4">Steps</th>
-                  <th className="py-2 pr-4">Resting HR</th>
-                  <th className="py-2">Sleep</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.activities.map(entry => (
-                  <tr key={entry.time} className="border-b last:border-b-0">
-                    <td className="py-2 pr-4">
-                      {new Date(entry.time).toLocaleDateString()}
-                    </td>
-                    <td className="py-2 pr-4">{entry.steps}</td>
-                    <td className="py-2 pr-4">{entry.resting_hr}</td>
-                    <td className="py-2">{entry.sleep_hours} hrs</td>
+          <>
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="border-b">
+                  <tr className="text-muted-foreground">
+                    <th className="py-2 pr-4">Date</th>
+                    <th className="py-2 pr-4">Steps</th>
+                    <th className="py-2 pr-4">Resting HR</th>
+                    <th className="py-2">Sleep</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {data.activities.map((entry) => (
+                    <tr key={entry.time} className="border-b last:border-b-0">
+                      <td className="py-2 pr-4">
+                        {new Date(entry.time).toLocaleDateString()}
+                      </td>
+                      <td className="py-2 pr-4">{entry.steps}</td>
+                      <td className="py-2 pr-4">{entry.resting_hr}</td>
+                      <td className="py-2">{entry.sleep_hours} hrs</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="sm:hidden space-y-2">
+              {data.activities.map((entry) => (
+                <div
+                  key={entry.time}
+                  className="border rounded p-2 text-sm flex flex-col gap-1"
+                >
+                  <div className="font-medium">
+                    {new Date(entry.time).toLocaleDateString()}
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Steps: {entry.steps}</span>
+                    <span>HR: {entry.resting_hr}</span>
+                  </div>
+                  <div>Sleep: {entry.sleep_hours} hrs</div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </CardContent>
     </Card>

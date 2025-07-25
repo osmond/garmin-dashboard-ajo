@@ -17,13 +17,16 @@ export default function HistoryTab() {
   if (error) {
     return (
       <Alert variant="destructive">
-        <AlertDescription>Failed to load dashboard data</AlertDescription>
+        <AlertDescription>
+          Failed to load dashboard data: {error}. Ensure your Garmin session is
+          valid.
+        </AlertDescription>
       </Alert>
     )
   }
   if (!data) return null
 
-  const chartData = data.activities.map(entry => ({
+  const chartData = data.activities.map((entry) => ({
     name: new Date(entry.time).toLocaleDateString(),
     steps: entry.steps,
   }))
@@ -39,7 +42,7 @@ export default function HistoryTab() {
             type="number"
             min={1}
             value={days}
-            onChange={e => setDays(Number(e.target.value))}
+            onChange={(e) => setDays(Number(e.target.value))}
             className="w-24"
           />
         </div>

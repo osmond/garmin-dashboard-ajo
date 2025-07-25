@@ -38,7 +38,10 @@ export default function MapView() {
   if (error) {
     return (
       <Alert variant="destructive">
-        <AlertDescription>Failed to load dashboard data</AlertDescription>
+        <AlertDescription>
+          Failed to load dashboard data: {error}. Ensure your Garmin session is
+          valid.
+        </AlertDescription>
       </Alert>
     )
   }
