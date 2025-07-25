@@ -32,15 +32,22 @@ export default function useGarminData(options: Options = {}) {
         let gps: MockData['gps'] | undefined
         if (Array.isArray(acts) && acts.length) {
           const coords: [number, number][] = []
-          for (const act of acts) {
-            const routeRes = await fetch(`/api/activity/${act.id}`)
-            if (routeRes.ok) {
-              const points: { lat: number; lon: number }[] = await routeRes.json()
-              coords.push(
-                ...points.map(p => [p.lat, p.lon] as [number, number])
-              )
-            }
-          }
+          const routePromises = acts.map(act =>
+            fetch(`/api/activity/${act.id}`)
+          )
+
+          const routeResponses = await Promise.all(routePromises)
+
+          const pointGroups = await Promise.all(
+            routeResponses.map(async res => {
+              if (!res.ok) return []
+              const points: { lat: number; lon: number }[] = await res.json()
+              return points.map(p => [p.lat, p.lon] as [number, number])
+            })
+          )
+
+          pointGroups.forEach(group => coords.push(...group))
+
           gps = { coordinates: coords }
         }
 
