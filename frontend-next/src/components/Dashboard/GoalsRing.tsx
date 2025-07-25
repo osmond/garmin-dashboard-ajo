@@ -1,8 +1,8 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import Spinner from "@/components/Spinner"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import useMockData from "@/hooks/useMockData"
-import useGarminData from "@/hooks/useGarminData"
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import Spinner from '@/components/Spinner'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import useMockData from '@/hooks/useMockData'
+import useGarminData from '@/hooks/useGarminData'
 
 export default function GoalsRing({ goal }: { goal?: number }) {
   const useData =
@@ -13,7 +13,10 @@ export default function GoalsRing({ goal }: { goal?: number }) {
   if (error) {
     return (
       <Alert variant="destructive">
-        <AlertDescription>Failed to load dashboard data</AlertDescription>
+        <AlertDescription>
+          Failed to load dashboard data: {error}. Ensure your Garmin session is
+          valid.
+        </AlertDescription>
       </Alert>
     )
   }

@@ -10,8 +10,14 @@ export default function Header() {
         </span>
         <h1 className="text-xl font-semibold md:text-2xl">Garmin Dashboard</h1>
       </div>
-      <Button variant="ghost" size="icon" aria-label="Settings">
-        <Settings className="size-5" />
+      <Button
+        variant="ghost"
+        size="sm"
+        aria-label="Settings"
+        className="focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 flex items-center gap-2"
+      >
+        <Settings className="size-5" aria-hidden="true" />
+        <span className="sr-only sm:not-sr-only">Settings</span>
       </Button>
     </header>
   )

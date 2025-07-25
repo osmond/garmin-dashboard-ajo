@@ -1,9 +1,4 @@
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from '@/components/ui/tabs'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import OverviewCard from '@/components/Dashboard/OverviewCard'
 import GoalsRing from '@/components/Dashboard/GoalsRing'
 import dynamic from 'next/dynamic'
@@ -15,11 +10,13 @@ import InsightsChart from '@/components/Dashboard/InsightsChart'
 import ActivitiesTable from '@/components/Dashboard/ActivitiesTable'
 import HistoryTab from '@/components/Dashboard/HistoryTab'
 import Header from '@/components/Header'
+import SessionStatus from '@/components/SessionStatus'
 
 export default function HomePage() {
   return (
     <main className="p-6 md:p-10 max-w-screen-lg mx-auto space-y-6">
       <Header />
+      <SessionStatus />
       <Tabs defaultValue="overview" className="space-y-6">
         <TabsList className="flex flex-wrap gap-2">
           <TabsTrigger value="overview">Overview</TabsTrigger>

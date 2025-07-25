@@ -1,8 +1,8 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import Spinner from "@/components/Spinner"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import useMockData from "@/hooks/useMockData"
-import useGarminData from "@/hooks/useGarminData"
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import Spinner from '@/components/Spinner'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import useMockData from '@/hooks/useMockData'
+import useGarminData from '@/hooks/useGarminData'
 
 export default function OverviewCard() {
   const useData =
@@ -13,7 +13,10 @@ export default function OverviewCard() {
   if (error) {
     return (
       <Alert variant="destructive">
-        <AlertDescription>Failed to load dashboard data</AlertDescription>
+        <AlertDescription>
+          Failed to load dashboard data: {error}. Ensure your Garmin session is
+          valid.
+        </AlertDescription>
       </Alert>
     )
   }
@@ -48,25 +51,31 @@ export default function OverviewCard() {
             <span className="font-semibold">Steps:</span> {metrics.steps}
           </li>
           <li>
-            <span className="font-semibold">Resting HR:</span> {metrics.resting_hr}
+            <span className="font-semibold">Resting HR:</span>{' '}
+            {metrics.resting_hr}
           </li>
           <li>
             <span className="font-semibold">VO₂ Max:</span> {metrics.vo2max}
           </li>
           <li>
-            <span className="font-semibold">Sleep:</span> {metrics.sleep_hours} hrs
+            <span className="font-semibold">Sleep:</span> {metrics.sleep_hours}{' '}
+            hrs
           </li>
           <li>
-            <span className="font-semibold">Steps History:</span> {stepsHistory.join(', ')}
+            <span className="font-semibold">Steps History:</span>{' '}
+            {stepsHistory.join(', ')}
           </li>
           <li>
-            <span className="font-semibold">HR Zones:</span> {hrZones.join(', ')}
+            <span className="font-semibold">HR Zones:</span>{' '}
+            {hrZones.join(', ')}
           </li>
           <li>
-            <span className="font-semibold">Sleep Stages:</span> {sleepStages.join(', ')}
+            <span className="font-semibold">Sleep Stages:</span>{' '}
+            {sleepStages.join(', ')}
           </li>
           <li>
-            <span className="font-semibold">VO₂ History:</span> {vo2History.join(', ')}
+            <span className="font-semibold">VO₂ History:</span>{' '}
+            {vo2History.join(', ')}
           </li>
         </ul>
       </CardContent>
