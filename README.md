@@ -4,7 +4,11 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
 
 ## Quick start
 
-1. **Save your Garmin session**
+1. **Use Node 18**
+
+   Run `nvm use` to switch to the version in `.nvmrc`.
+
+2. **Save your Garmin session**
 
    The script `save-garmin-session.js` writes your login cookies to the file
    specified by `GARMIN_COOKIE_PATH`. It requires `GARMIN_EMAIL`,
@@ -33,7 +37,7 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    `GARMIN_COOKIE_PATH` is set, you can omit the path argument.
 
 
-2. **Create and edit `.env`** (keep it in the repository root so the API can load `../.env`)
+3. **Create and edit `.env`** (keep it in the repository root so the API can load `../.env`)
 
    ```bash
    cp .env.example .env
@@ -45,7 +49,7 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    path is not absolute. Change `PORT` if you need a different API
    port (defaults to `3002`).
 
-3. **Install dependencies and start the frontend-next app**
+4. **Install dependencies and start the frontend-next app**
 
    ```bash
    npm install
@@ -60,12 +64,12 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    Storybook now officially supports React 19, so the `frontend-next`
    dependencies install without additional flags.
 
-4. **Initialize shadcn-ui in frontend-next**
+5. **Initialize shadcn-ui in frontend-next**
 
    Run `npx shadcn@latest init` inside the `frontend-next` directory to
    generate the `ui/` folder.
 
-5. **(Optional) Enable mock data mode**
+6. **(Optional) Enable mock data mode**
 
    Set `NEXT_PUBLIC_MOCK_MODE=true` in your `.env` file to load the sample
    metrics from `frontend-next/public/mockData.json`. Any other value or leaving
