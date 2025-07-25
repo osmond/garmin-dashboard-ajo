@@ -77,6 +77,10 @@ Run all API and React tests with:
 npm test   # runs "npm test --prefix api" and "npm test --prefix frontend-next"
 ```
 
+### Commit message check
+
+Husky runs `scripts/commit-msg.js` to validate commit messages. The hook fails if the first line exceeds 60 characters or the first word ends in "ed".
+
 ### Required environment variables
 
 - `GARMIN_EMAIL` and `GARMIN_PASSWORD` for `save-garmin-session.js`
