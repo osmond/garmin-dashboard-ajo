@@ -19,7 +19,7 @@ function HeatLayer({ points }: HeatProps) {
   useEffect(() => {
     if (!map) return
     // leaflet.heat adds heatLayer to the global L namespace
-    const layer = (L as any).heatLayer(points, { radius: 25 })
+    const layer = L.heatLayer(points, { radius: 25 })
     layer.addTo(map)
     return () => {
       map.removeLayer(layer)
