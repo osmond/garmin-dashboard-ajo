@@ -67,16 +67,12 @@ export default function MapView() {
         </Button>
       </CardHeader>
       <CardContent className="h-64">
-        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-        {/* @ts-ignore react-leaflet types incompatible with React 19 */}
         <MapContainer center={center} zoom={15} className="h-full w-full">
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {heat ? (
             <HeatLayer points={coords} />
           ) : (
             <>
-              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-              {/* @ts-ignore react-leaflet types incompatible with React 19 */}
               <Polyline positions={coords} color="blue" />
             </>
           )}
