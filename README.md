@@ -50,16 +50,15 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    ```bash
    npm install
    npm install --prefix api
-   npm install --legacy-peer-deps --prefix frontend-next
+   npm install --prefix frontend-next
    npm start    # starts both the API and Next.js dev server
    ```
 
    The repository uses **npm** for the Next.js frontend. Any yarn lockfile
    has been removed to avoid CI warnings.
 
-   Storybook only supports React up to v18, so installing the `frontend-next`
-   package with React 19 requires the `--legacy-peer-deps` (or `--force`)
-   option.
+   Storybook now officially supports React 19, so the `frontend-next`
+   dependencies install without additional flags.
 
 4. **Initialize shadcn-ui in frontend-next**
 
@@ -85,11 +84,9 @@ workspace. The frontend-next dependencies must be installed or `npm test` will f
 ```bash
 npm install                # root dev tools
 npm install --prefix api   # API dependencies
-npm install --legacy-peer-deps --prefix frontend-next   # React app dependencies
+npm install --prefix frontend-next   # React app dependencies
 ```
 
-The same `--legacy-peer-deps` flag is required here to avoid Storybook's
-React peer dependency warnings.
 
 Run all API and React tests with:
 
