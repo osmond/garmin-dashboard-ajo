@@ -1,14 +1,13 @@
-import { useState, useEffect } from "react"
-import L from "leaflet"
-import "leaflet/dist/leaflet.css"
-import "leaflet.heat"
-import { MapContainer, TileLayer, Polyline, useMap } from "react-leaflet"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Spinner from "@/components/Spinner"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import useMockData from "@/hooks/useMockData"
-import useGarminData from "@/hooks/useGarminData"
+import { useState, useEffect } from 'react'
+import 'leaflet/dist/leaflet.css'
+import { heatLayer } from 'leaflet.heat'
+import { MapContainer, TileLayer, Polyline, useMap } from 'react-leaflet'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import Spinner from '@/components/Spinner'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import useMockData from '@/hooks/useMockData'
+import useGarminData from '@/hooks/useGarminData'
 
 interface HeatProps {
   points: [number, number][]
@@ -18,7 +17,7 @@ function HeatLayer({ points }: HeatProps) {
   const map = useMap()
   useEffect(() => {
     if (!map) return
-    const layer = (L as any).heatLayer(points, { radius: 25 })
+    const layer = heatLayer(points, { radius: 25 })
     layer.addTo(map)
     return () => {
       map.removeLayer(layer)
@@ -43,7 +42,7 @@ export default function MapView() {
   }
   if (!data) return null
 
-  const coords = data.gps?.coordinates || []
+  const coords = (data.gps?.coordinates ?? []) as [number, number][]
   if (!coords.length) {
     return (
       <Card>
@@ -61,17 +60,23 @@ export default function MapView() {
     <Card>
       <CardHeader className="flex items-center justify-between">
         <CardTitle>Map View</CardTitle>
-        <Button size="sm" variant="outline" onClick={() => setHeat(h => !h)}>
-          {heat ? "Show Route" : "Show Heatmap"}
+        <Button size="sm" variant="outline" onClick={() => setHeat((h) => !h)}>
+          {heat ? 'Show Route' : 'Show Heatmap'}
         </Button>
       </CardHeader>
       <CardContent className="h-64">
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore react-leaflet types incompatible with React 19 */}
         <MapContainer center={center} zoom={15} className="h-full w-full">
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {heat ? (
             <HeatLayer points={coords} />
           ) : (
-            <Polyline positions={coords} color="blue" />
+            <>
+              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+              {/* @ts-ignore react-leaflet types incompatible with React 19 */}
+              <Polyline positions={coords} color="blue" />
+            </>
           )}
         </MapContainer>
       </CardContent>

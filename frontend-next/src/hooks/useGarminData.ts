@@ -20,16 +20,18 @@ export default function useGarminData() {
         if (!actsRes.ok) throw new Error(await actsRes.text())
 
         const summary = await summaryRes.json()
-        const weekly = await weeklyRes.json()
+        const weekly: MockData['activities'] = await weeklyRes.json()
         const acts = await actsRes.json()
 
-        let gps
+        let gps: MockData['gps'] | undefined
         if (Array.isArray(acts) && acts.length) {
           const routeRes = await fetch(`/api/activity/${acts[0].id}`)
           if (routeRes.ok) {
             const points: { lat: number; lon: number }[] = await routeRes.json()
             gps = {
-              coordinates: points.map(p => [p.lat, p.lon] as [number, number]),
+              coordinates: points.map(
+                (p) => [p.lat, p.lon] as [number, number]
+              ),
             }
           }
         }
@@ -38,11 +40,11 @@ export default function useGarminData() {
           metrics: summary,
           activities: weekly,
           goals: { steps: 10000, sleep_hours: 8 },
-          gps,
-          stepsHistory: weekly.map(d => d.steps),
+          gps: gps ?? { coordinates: [] },
+          stepsHistory: weekly.map((d) => d.steps),
           hrZones: [],
           sleepStages: [],
-          vo2History: weekly.map(d => d.vo2max ?? 0),
+          vo2History: weekly.map((d) => d.vo2max ?? 0),
         })
         setError(null)
       } catch (err) {
