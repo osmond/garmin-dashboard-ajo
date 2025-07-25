@@ -28,7 +28,10 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    node scripts/save-garmin-session.js $GARMIN_COOKIE_PATH
    ```
 
-   This generates `$GARMIN_COOKIE_PATH` containing your login cookies.
+
+   This generates `~/garmin_session.json` containing your login cookies. If
+   `GARMIN_COOKIE_PATH` is set, you can omit the path argument.
+
 
 2. **Create and edit `.env`** (keep it in the repository root so the API can load `../.env`)
 

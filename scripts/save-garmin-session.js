@@ -9,12 +9,18 @@ try {
 }
 
 const args = process.argv.slice(2);
-if (args.length === 0) {
-  console.error('Usage: node scripts/save-garmin-session.js <output-file> [--email <email>] [--password <password>]');
+const outputArg = args[0] && !args[0].startsWith('--') ? args[0] : undefined;
+// Use path from argument or GARMIN_COOKIE_PATH when the argument is omitted
+const output = outputArg
+  ? path.resolve(outputArg)
+  : process.env.GARMIN_COOKIE_PATH
+    ? path.resolve(process.env.GARMIN_COOKIE_PATH)
+    : undefined;
+if (!output) {
+  console.error('Usage: node scripts/save-garmin-session.js [output-file] [--email <email>] [--password <password>]');
+  console.error('Provide an output file or set GARMIN_COOKIE_PATH');
   process.exit(1);
 }
-
-const output = path.resolve(args[0]);
 function getArg(flag) {
   const index = args.indexOf(flag);
   return index !== -1 ? args[index + 1] : undefined;
