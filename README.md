@@ -6,13 +6,29 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
 
 1. **Save your Garmin session**
 
+   The script `save-garmin-session.js` writes your login cookies to the file
+   specified by `GARMIN_COOKIE_PATH`. It requires `GARMIN_EMAIL`,
+   `GARMIN_PASSWORD`, and `GARMIN_COOKIE_PATH` in the environment.
+
+   Export the variables first and then run the script:
+
+   ```bash
+   export GARMIN_EMAIL=you@example.com
+   export GARMIN_PASSWORD=yourPassword
+   export GARMIN_COOKIE_PATH=$HOME/garmin_session.json
+   node scripts/save-garmin-session.js "$GARMIN_COOKIE_PATH"
+   ```
+
+   Or prefix the variables on a single line:
+
    ```bash
    GARMIN_EMAIL=you@example.com \
    GARMIN_PASSWORD=yourPassword \
-   node scripts/save-garmin-session.js ~/garmin_session.json
+   GARMIN_COOKIE_PATH=$HOME/garmin_session.json \
+   node scripts/save-garmin-session.js $GARMIN_COOKIE_PATH
    ```
 
-   This generates `~/garmin_session.json` containing your login cookies.
+   This generates `$GARMIN_COOKIE_PATH` containing your login cookies.
 
 2. **Create and edit `.env`** (keep it in the repository root so the API can load `../.env`)
 
@@ -88,6 +104,8 @@ npm test   # runs "npm test --prefix api" and "npm test --prefix frontend-next"
 
 Use `scripts/backfill-garmin-history.js` to populate InfluxDB with data from
 past dates. Provide a start and end date or a number of days to backfill.
+The script also expects `GARMIN_EMAIL`, `GARMIN_PASSWORD`, and
+`GARMIN_COOKIE_PATH` in the environment (or a populated `.env`).
 
 ```bash
 # backfill between two dates (inclusive)
