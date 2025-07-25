@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import 'leaflet/dist/leaflet.css'
-import { heatLayer } from 'leaflet.heat'
+import L from 'leaflet'
+import 'leaflet.heat'
 import { MapContainer, TileLayer, Polyline, useMap } from 'react-leaflet'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -17,7 +18,8 @@ function HeatLayer({ points }: HeatProps) {
   const map = useMap()
   useEffect(() => {
     if (!map) return
-    const layer = heatLayer(points, { radius: 25 })
+    // leaflet.heat adds heatLayer to the global L namespace
+    const layer = (L as any).heatLayer(points, { radius: 25 })
     layer.addTo(map)
     return () => {
       map.removeLayer(layer)
