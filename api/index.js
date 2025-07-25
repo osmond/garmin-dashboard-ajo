@@ -9,10 +9,15 @@ const {
   fetchHistory,
   fetchActivityRoute,
   fetchRecentActivities,
+  login,
 } = require('./scraper');
 
 const app = express();
 const port = process.env.PORT || 3002;
+
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
 
 app.get('/api/summary', async (req, res) => {
   try {
@@ -77,12 +82,20 @@ app.get('/api/activity/:id', async (req, res) => {
 app.use((req, res) => res.status(404).json({ error: 'Not found' }));
 
 if (require.main === module) {
-  app.listen(port, () => {
-    console.log(`API running at http://localhost:${port}`);
-  });
-  cron.schedule('0 0 * * *', () => {
-    fetchGarminSummary().catch(err => console.error(err));
-  });
+  (async () => {
+    try {
+      await login();
+    } catch (err) {
+      console.error('Failed to login:', err);
+      process.exit(1);
+    }
+    app.listen(port, () => {
+      console.log(`API running at http://localhost:${port}`);
+    });
+    cron.schedule('0 0 * * *', () => {
+      fetchGarminSummary().catch(err => console.error(err));
+    });
+  })();
 }
 
 module.exports = app;

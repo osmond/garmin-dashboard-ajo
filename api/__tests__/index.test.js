@@ -78,6 +78,14 @@ describe('GET /api/activities', () => {
   });
 });
 
+describe('GET /api/health', () => {
+  it('responds with ok status', async () => {
+    const res = await request(app).get('/api/health');
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ status: 'ok' });
+  });
+});
+
 describe('Unknown routes', () => {
   it('responds with 404', async () => {
     const res = await request(app).get('/does/not/exist');
