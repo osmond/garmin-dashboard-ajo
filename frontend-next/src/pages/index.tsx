@@ -6,7 +6,11 @@ import {
 } from '@/components/ui/tabs'
 import OverviewCard from '@/components/Dashboard/OverviewCard'
 import GoalsRing from '@/components/Dashboard/GoalsRing'
-import MapView from '@/components/Dashboard/MapView'
+import dynamic from 'next/dynamic'
+
+const MapView = dynamic(() => import('@/components/Dashboard/MapView'), {
+  ssr: false,
+})
 import InsightsChart from '@/components/Dashboard/InsightsChart'
 import ActivitiesTable from '@/components/Dashboard/ActivitiesTable'
 import Header from '@/components/Header'
