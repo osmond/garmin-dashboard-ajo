@@ -30,7 +30,7 @@ function HeatLayer({ points }: HeatProps) {
 
 export default function MapView() {
   const useData =
-    process.env.NEXT_PUBLIC_MOCK_MODE === 'false' ? useGarminData : useMockData
+    process.env.NEXT_PUBLIC_MOCK_MODE === 'true' ? useMockData : useGarminData
   const { data, isLoading, error } = useData({ activityLimit: 5 })
   const [heat, setHeat] = useState(false)
 
