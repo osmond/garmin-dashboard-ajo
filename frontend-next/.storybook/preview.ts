@@ -1,6 +1,6 @@
 import type { Preview } from '@storybook/react';
 import '../src/styles/globals.css';
-import mockData from '../src/data/mockData.json';
+import mockData from '../public/mockData.json';
 
 if (typeof globalThis.fetch === 'function') {
   const originalFetch = globalThis.fetch;
