@@ -39,6 +39,11 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    package with React 19 requires the `--legacy-peer-deps` (or `--force`)
    option.
 
+4. **Initialize shadcn-ui in frontend-next**
+
+   Run `npx shadcn@latest init` inside the `frontend-next` directory to
+   generate the `ui/` folder.
+
   The `frontend-next` directory contains a Next.js app.
 An additional endpoint `/api/activity/:id` returns GPX coordinates for a specific activity.
 
