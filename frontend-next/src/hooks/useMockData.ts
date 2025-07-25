@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import mock from '../data/mockData.json'
+import mock from '../../public/mockData.json'
 
 export type MockData = typeof mock
 

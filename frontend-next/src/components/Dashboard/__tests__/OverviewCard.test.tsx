@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { beforeEach, afterEach, jest, test, expect } from '@jest/globals'
 import OverviewCard from '../OverviewCard'
-import mockData from '@/data/mockData.json'
+import mockData from '../../../../public/mockData.json'
 
 beforeEach(() => {
   const fetchMock = jest.fn() as jest.MockedFunction<typeof fetch>
