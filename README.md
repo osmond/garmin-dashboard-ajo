@@ -1,6 +1,6 @@
 # Garmin Dashboard AJO
 
-A small dashboard that collects your Garmin activity data. The backend is an Express API that stores daily summaries in InfluxDB and exposes history endpoints. The frontend lives in `frontend-next` and is a Next.js app styled with Tailwind CSS and shadcn-ui.
+A small dashboard that collects your Garmin activity data. The backend is an Express API that stores daily summaries in InfluxDB and exposes history endpoints. A single-page React app built with Vite displays the results. Tailwind CSS and shadcn-ui are preconfigured.
 
 ## Quick start
 
@@ -26,66 +26,36 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    relative to `api/` when running `npm start`. Change `PORT` if you need a
    different API port (defaults to `3002`).
 
-3. **Install dependencies and start the app**
+3. **Install dependencies and start the single-page app**
 
    ```bash
    npm install
    npm install --prefix api
-   # Storybook requires older peer dependencies
-   npm install --legacy-peer-deps --prefix frontend-next
-   # runs both servers concurrently
-   npm start
+   npm install --prefix frontend
+   npm start    # starts both the API and React dev server
    ```
 
-   This starts the Express API on port `3002` and the Next.js dev server on
-   port `3000`. The Next.js app lives in `frontend-next` and already includes
-   Tailwind CSS and shadcn-ui.
+   The React app lives in `frontend` and already includes Tailwind CSS and shadcn-ui.
 
-## Preview URL
-
-Every branch is automatically deployed to Vercel. The latest preview is available at <https://garmin-dashboard-ajo.vercel.app>.
-
-Next.js serves pages from `frontend-next`. The API fetches new data each midnight and exposes a weekly history at `/api/weekly`.
+The single-page React app uses Vite to proxy `/api` requests to your running API server. The API fetches new data each midnight and exposes a weekly history at `/api/weekly`.
 An additional endpoint `/api/activity/:id` returns GPX coordinates for a specific activity.
-
-### Mock mode
-
-The dashboard defaults to loading sample data from `frontend-next/src/data/mockData.json` via the
-`useMockData` hook. When the environment variable `NEXT_PUBLIC_MOCK_MODE` is set to `false`
-in `.env`, `useMockData` is bypassed and the frontend fetches live data from the API endpoints
-(`/api/summary`, `/api/weekly`, etc.). Restart the app after changing this variable.
 
 ### Running Tests
 
-Install dependencies in the root and workspaces before running tests:
+Before running tests or preparing Git hooks, install dependencies in each
+workspace. The frontend dependencies must be installed or `npm test` will fail:
 
 ```bash
 npm install                # root dev tools
-npm install --prefix api            # API dependencies
-npm install --legacy-peer-deps --prefix frontend-next  # frontend dependencies
+npm install --prefix api   # API dependencies
+npm install --prefix frontend   # React app dependencies
 ```
 
-Run all tests from the repository root:
+Run all API and React tests with:
 
 ```bash
-npm test   # runs API and frontend tests
+npm test   # runs "npm test --prefix api" and "npm test --prefix frontend"
 ```
-
-Run just the API or frontend tests with:
-
-```bash
-npm test --prefix api
-npm test --prefix frontend-next
-```
-
-### Storybook
-
-Run Storybook to preview isolated UI components:
-
-```bash
-npm run storybook --prefix frontend-next
-```
-
 
 ### Required environment variables
 
