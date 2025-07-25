@@ -35,7 +35,7 @@ export default function GoalsRing({ goal }: { goal?: number }) {
         <CardTitle>Daily Goal</CardTitle>
       </CardHeader>
       <CardContent>
-        <svg width="120" height="120" className="block mx-auto">
+        <svg width="120" height="120" className="mx-auto block">
           <circle
             cx="60"
             cy="60"

@@ -32,10 +32,10 @@ export default function ActivitiesTable() {
           <>No activities yet</>
         ) : (
           <>
-            <div className="hidden sm:block overflow-x-auto">
+            <div className="hidden overflow-x-auto sm:block">
               <table className="w-full text-left text-sm">
                 <thead className="border-b">
-                  <tr className="text-muted-foreground">
+                  <tr className="text-[var(--muted-foreground)]">
                     <th className="py-2 pr-4">Date</th>
                     <th className="py-2 pr-4">Steps</th>
                     <th className="py-2 pr-4">Resting HR</th>
@@ -56,11 +56,11 @@ export default function ActivitiesTable() {
                 </tbody>
               </table>
             </div>
-            <div className="sm:hidden space-y-2">
+            <div className="space-y-2 sm:hidden">
               {data.activities.map((entry) => (
                 <div
                   key={entry.time}
-                  className="border rounded p-2 text-sm flex flex-col gap-1"
+                  className="flex flex-col gap-1 rounded border p-2 text-sm"
                 >
                   <div className="font-medium">
                     {new Date(entry.time).toLocaleDateString()}

@@ -52,7 +52,7 @@ export default function InsightsChart() {
         <CardTitle>Insights</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="w-full h-48">
+        <div className="h-48 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={chartData}
