@@ -4,7 +4,8 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
+  ReferenceLine,
 } from 'recharts'
 
 interface ChartData {
@@ -12,7 +13,12 @@ interface ChartData {
   steps: number
 }
 
-export default function HistoryChart({ data }: { data: ChartData[] }) {
+interface Props {
+  data: ChartData[]
+  goal?: number
+}
+
+export default function HistoryChart({ data, goal }: Props) {
   if (!data || !data.length) return null
 
   return (
@@ -28,6 +34,13 @@ export default function HistoryChart({ data }: { data: ChartData[] }) {
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
+          {goal && (
+            <ReferenceLine
+              y={goal}
+              stroke="hsl(var(--muted-foreground))"
+              strokeDasharray="3 3"
+            />
+          )}
           <Area type="monotone" dataKey="steps" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#stepsColor)" />
         </AreaChart>
       </ResponsiveContainer>

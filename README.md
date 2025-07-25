@@ -85,6 +85,18 @@ node scripts/backfill-garmin-history.js 2024-01-01 2024-01-07
 node scripts/backfill-garmin-history.js --days 30
 ```
 
+For large backfills (e.g. 10 years of history) set `--days` to a big number:
+
+```bash
+node scripts/backfill-garmin-history.js --days 3650
+```
+
+### Viewing long-term history
+
+The dashboard's History tab queries `/api/history?days=N` using the number
+entered in the input field. Increase the days value to load more past data
+after running the backfill script.
+
 ## License
 
 [MIT](LICENSE)

@@ -13,6 +13,7 @@ const MapView = dynamic(() => import('@/components/Dashboard/MapView'), {
 })
 import InsightsChart from '@/components/Dashboard/InsightsChart'
 import ActivitiesTable from '@/components/Dashboard/ActivitiesTable'
+import HistoryTab from '@/components/Dashboard/HistoryTab'
 import Header from '@/components/Header'
 
 export default function HomePage() {
@@ -24,6 +25,7 @@ export default function HomePage() {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="activities">Activities</TabsTrigger>
           <TabsTrigger value="insights">Insights</TabsTrigger>
+          <TabsTrigger value="history">History</TabsTrigger>
           <TabsTrigger value="goals">Goals</TabsTrigger>
           <TabsTrigger value="map">Map</TabsTrigger>
         </TabsList>
@@ -48,6 +50,9 @@ export default function HomePage() {
         </TabsContent>
         <TabsContent value="insights">
           <InsightsChart />
+        </TabsContent>
+        <TabsContent value="history">
+          <HistoryTab />
         </TabsContent>
         <TabsContent value="goals">
           <GoalsRing />
