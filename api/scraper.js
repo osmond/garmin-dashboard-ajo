@@ -110,11 +110,28 @@ async function fetchWeeklySummary() {
 
 async function fetchActivityRoute(activityId) {
   await login();
-  const gpx = await gcClient.client.get(
-    gcClient.url.DOWNLOAD_GPX + activityId
-  );
-  const parser = new XMLParser({ ignoreAttributes: false });
-  const data = parser.parse(gpx);
+  let gpx;
+  try {
+    gpx = await gcClient.client.get(
+      gcClient.url.DOWNLOAD_GPX + activityId
+    );
+  } catch (err) {
+    console.error('Error downloading GPX', err);
+    throw err;
+  }
+  if (!gpx) {
+    console.error('No GPX returned for activity', activityId);
+    throw new Error('Invalid GPX data');
+  }
+  let data;
+  try {
+    const parser = new XMLParser({ ignoreAttributes: false });
+    data = parser.parse(gpx);
+  } catch (err) {
+    console.error('Failed to parse GPX:', err);
+    console.error('GPX response:', gpx);
+    throw new Error('Invalid GPX data');
+  }
   const trkpts = data?.gpx?.trk?.trkseg?.trkpt;
   const arr = Array.isArray(trkpts) ? trkpts : trkpts ? [trkpts] : [];
   const points = arr.map(p => ({

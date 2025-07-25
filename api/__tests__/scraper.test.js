@@ -98,6 +98,11 @@ describe('fetchActivityRoute', () => {
     expect(points).toEqual([{ lat: 1, lon: 2 }]);
     expect(gcClient.client.get).toHaveBeenCalledWith('gpx/123');
   });
+
+  it('throws on invalid gpx data', async () => {
+    gcClient.client.get.mockResolvedValue('');
+    await expect(fetchActivityRoute('123')).rejects.toThrow('Invalid GPX data');
+  });
 });
 
 describe('fetchRecentActivities', () => {
