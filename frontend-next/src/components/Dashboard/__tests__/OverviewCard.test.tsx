@@ -5,6 +5,7 @@ import OverviewCard from '../OverviewCard'
 import mockData from '../../../../public/mockData.json'
 
 beforeEach(() => {
+  process.env.NEXT_PUBLIC_MOCK_MODE = 'true'
   const fetchMock = jest.fn() as jest.MockedFunction<typeof fetch>
   fetchMock.mockResolvedValue({
     ok: true,
@@ -15,6 +16,7 @@ beforeEach(() => {
 
 afterEach(() => {
   ;(global.fetch as jest.Mock).mockClear()
+  delete process.env.NEXT_PUBLIC_MOCK_MODE
 })
 
 test('renders the step count from mockData', async () => {

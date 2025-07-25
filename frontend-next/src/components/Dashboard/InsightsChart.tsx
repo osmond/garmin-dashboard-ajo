@@ -14,7 +14,7 @@ import useGarminData from "@/hooks/useGarminData"
 
 export default function InsightsChart() {
   const useData =
-    process.env.NEXT_PUBLIC_MOCK_MODE === 'false' ? useGarminData : useMockData
+    process.env.NEXT_PUBLIC_MOCK_MODE === 'true' ? useMockData : useGarminData
   const { data, isLoading, error } = useData()
 
   if (isLoading) return <Spinner />

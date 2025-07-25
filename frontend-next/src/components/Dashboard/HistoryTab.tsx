@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 export default function HistoryTab() {
   const [days, setDays] = useState(30)
   const useData =
-    process.env.NEXT_PUBLIC_MOCK_MODE === 'false' ? useGarminData : useMockData
+    process.env.NEXT_PUBLIC_MOCK_MODE === 'true' ? useMockData : useGarminData
   const { data, isLoading, error } = useData({ historyDays: days })
 
   if (isLoading) return <Spinner />
