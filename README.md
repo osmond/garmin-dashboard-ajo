@@ -47,6 +47,13 @@ A small dashboard that collects your Garmin activity data. The backend is an Exp
    Run `npx shadcn@latest init` inside the `frontend-next` directory to
    generate the `ui/` folder.
 
+5. **(Optional) Enable mock data mode**
+
+   Set `NEXT_PUBLIC_MOCK_MODE=true` in your `.env` file to load the sample
+   metrics from `frontend-next/public/mockData.json` instead of fetching data
+   from Garmin. This lets you explore the dashboard without configuring the
+   backend.
+
   The `frontend-next` directory contains a Next.js app.
 An additional endpoint `/api/activity/:id` returns GPX coordinates for a specific activity.
 
@@ -74,6 +81,8 @@ npm test   # runs "npm test --prefix api" and "npm test --prefix frontend-next"
 
 - `GARMIN_EMAIL` and `GARMIN_PASSWORD` for `save-garmin-session.js`
 - `GARMIN_COOKIE_PATH` location of the saved session
+- `NEXT_PUBLIC_MOCK_MODE` set to `true` to read `frontend-next/public/mockData.json`
+  instead of fetching Garmin data
 
 ### Backfill historical data
 
