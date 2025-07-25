@@ -152,3 +152,52 @@ describe('fetchRecentActivities', () => {
     expect(gcClient.getActivities).toHaveBeenCalledWith(0, 5);
   });
 });
+
+describe('login caching', () => {
+  let login;
+  let cookiePath;
+
+  beforeEach(async () => {
+    jest.resetModules();
+    ({ login } = require('../scraper'));
+    ({ instance: gcClient } = require('garmin-connect'));
+    const fs = require('fs');
+    const path = require('path');
+    cookiePath = path.join(__dirname, 'session.json');
+    await fs.promises.writeFile(
+      cookiePath,
+      JSON.stringify({ oauth1: 'a', oauth2: 'b' })
+    );
+    process.env.GARMIN_COOKIE_PATH = cookiePath;
+  });
+
+  afterEach(async () => {
+    const fs = require('fs');
+    try {
+      await fs.promises.unlink(cookiePath);
+    } catch {}
+  });
+
+  it('skips reload when cookie unchanged', async () => {
+    await login();
+    expect(gcClient.setSession).toHaveBeenCalledTimes(1);
+    await login();
+    expect(gcClient.setSession).toHaveBeenCalledTimes(1);
+  });
+
+  it('reloads when cookie file changes', async () => {
+    await login();
+    const fs = require('fs');
+    await new Promise(r => setTimeout(r, 10));
+    await fs.promises.writeFile(
+      cookiePath,
+      JSON.stringify({ oauth1: 'c', oauth2: 'd' })
+    );
+    await login();
+    expect(gcClient.setSession).toHaveBeenCalledTimes(2);
+    expect(gcClient.setSession).toHaveBeenLastCalledWith({
+      oauth1: 'c',
+      oauth2: 'd',
+    });
+  });
+});

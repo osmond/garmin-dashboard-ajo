@@ -7,6 +7,9 @@ const { XMLParser } = require('fast-xml-parser');
 
 const gcClient = new GarminConnect({ username: '', password: '' });
 
+let sessionLoaded = false;
+let lastTokenMtime = 0;
+
 async function login() {
   if (!process.env.GARMIN_COOKIE_PATH) {
     throw new Error('GARMIN_COOKIE_PATH is required');
@@ -14,12 +17,16 @@ async function login() {
   if (!path.isAbsolute(process.env.GARMIN_COOKIE_PATH)) {
     throw new Error('GARMIN_COOKIE_PATH must be an absolute path');
   }
+  let stat;
   try {
-    await fs.promises.access(process.env.GARMIN_COOKIE_PATH);
+    stat = await fs.promises.stat(process.env.GARMIN_COOKIE_PATH);
   } catch {
     throw new Error(
       `Cookie file not found: ${process.env.GARMIN_COOKIE_PATH}`
     );
+  }
+  if (sessionLoaded && lastTokenMtime === stat.mtimeMs) {
+    return;
   }
   const file = await fs.promises.readFile(
     process.env.GARMIN_COOKIE_PATH,
@@ -31,6 +38,8 @@ async function login() {
   } else if (typeof gcClient.loadToken === 'function') {
     gcClient.loadToken(data.oauth1, data.oauth2);
   }
+  sessionLoaded = true;
+  lastTokenMtime = stat.mtimeMs;
 }
 
 async function writeToInflux(summary) {
