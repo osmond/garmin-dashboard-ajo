@@ -1,6 +1,7 @@
-declare module 'leaflet.heat' {
-  import * as L from 'leaflet'
-  export function heatLayer(
+import * as L from 'leaflet'
+
+declare module 'leaflet' {
+  function heatLayer(
     latlngs: Array<[number, number]>,
     options?: unknown
   ): L.Layer
