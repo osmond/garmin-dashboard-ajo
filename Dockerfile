@@ -1,5 +1,6 @@
-FROM node:20
+FROM node:20 AS deps
 WORKDIR /app
+ENV NODE_ENV=production
 
 # copy root package files first for better caching
 COPY package*.json ./
@@ -7,13 +8,19 @@ COPY package*.json ./
 COPY api/package*.json ./api/
 COPY frontend-next/package*.json ./frontend-next/
 
-# install dependencies for all workspaces
-RUN npm install \
-  && npm install --prefix api \
-  && npm install --prefix frontend-next
+# install production dependencies for all workspaces
+RUN npm ci --omit=dev \
+  && npm ci --omit=dev --prefix api \
+  && npm ci --omit=dev --prefix frontend-next
 
-# copy the rest of the source code
+FROM node:20-slim
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/api/node_modules ./api/node_modules
+COPY --from=deps /app/frontend-next/node_modules ./frontend-next/node_modules
+
 COPY . .
 
-# default command runs both API and frontend via the root start script
 CMD ["npm", "start"]
