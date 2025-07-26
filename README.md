@@ -28,6 +28,9 @@ Personal Garmin data viewer that stores your stats in InfluxDB and shows them in
    cd garmin-dashboard-ajo
    npm install
    ```
+   If you work inside the `frontend-next/` folder separately from the root,
+   run `npm install` in that directory too so the Next.js frontend has its own
+   dependencies installed.
 
 2. **Create your `.env` file**
 
