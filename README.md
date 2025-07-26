@@ -44,6 +44,29 @@ node scripts/save-garmin-session.js $HOME/garmin_session.json --email you@exampl
 npm start
 ```
 
+## Docker
+
+The project includes a `docker-compose.yml` that builds the Node image and runs
+both the API and frontend containers. First copy the sample environment file and
+fill in the required variables:
+
+```bash
+cp .env.example .env
+# edit INFLUX_URL, INFLUX_TOKEN, INFLUX_ORG, INFLUX_BUCKET, PORT,
+# GARMIN_COOKIE_PATH, GARMIN_EMAIL and GARMIN_PASSWORD
+```
+
+Run the stack with your `.env` file mounted so the containers can read the
+configuration:
+
+```bash
+docker-compose build
+docker-compose --env-file .env up
+```
+
+The dashboard will be available on ports `3000` and `3002` as defined in the
+compose file.
+
 ## Interactive Setup
 
 Run `node scripts/setup.js` for a guided configuration. This script prompts for
