@@ -1,6 +1,6 @@
 # Garmin Dashboard AJO
 
-A self-hosted dashboard that syncs your Garmin stats to InfluxDB and visualizes them in a Next.js app.
+Personal Garmin data viewer that stores your stats in InfluxDB and shows them in a simple Next.js dashboard. These instructions assume you want to run the project just for yourself.
 
 ## Table of Contents
 
@@ -21,32 +21,40 @@ A self-hosted dashboard that syncs your Garmin stats to InfluxDB and visualizes 
 
 ## Quick Start
 
-```bash
-# clone the repo
-git clone https://github.com/yourname/garmin-dashboard-ajo.git
-cd garmin-dashboard-ajo
+1. **Clone and install**
 
-# install dependencies
-npm install
+   ```bash
+   git clone https://github.com/yourname/garmin-dashboard-ajo.git
+   cd garmin-dashboard-ajo
+   npm install
+   ```
 
-# copy environment file and add your Garmin credentials
-cp .env.example .env
-# edit GARMIN_EMAIL and GARMIN_PASSWORD in .env
-node scripts/save-garmin-session.js $HOME/garmin_session.json --email you@example.com --password yourPassword
+2. **Create your `.env` file**
 
-# edit .env to point to the session file and your InfluxDB settings
+   ```bash
+   cp .env.example .env
+   ```
+   Edit the file to fill in your InfluxDB details.
 
-# start API and Next.js app
-npm start
-```
+3. **Save your Garmin session**
+
+   ```bash
+   node scripts/save-garmin-session.js ~/garmin_session.json --email you@example.com --password yourPassword
+   ```
+   Update `GARMIN_COOKIE_PATH` in `.env` to point to the newly created `garmin_session.json`.
+
+4. **Start the dashboard**
+
+   ```bash
+   npm start
+   ```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser. If your phone is on the same network, visit `http://<your-computer-ip>:3000` to view it there too.
 
 ## Docker
-
-The project includes a `docker-compose.yml` that builds the Node image and runs
-both the API and frontend containers. The Dockerfile now uses a multi-stage
-build and installs dependencies with `NODE_ENV=production` and
-`npm ci --omit=dev` to keep the final image small. First copy the sample
-environment file and fill in the required variables:
+Use Docker if you prefer a single command deployment. The compose file builds
+the image and runs both the API and frontend containers. Copy `.env.example`
+to `.env` and fill in all variables just like the local setup:
 
 ```bash
 cp .env.example .env
@@ -54,23 +62,20 @@ cp .env.example .env
 # GARMIN_COOKIE_PATH, GARMIN_EMAIL and GARMIN_PASSWORD
 ```
 
-Run the stack with your `.env` file mounted so the containers can read the
-configuration:
+Build and start the stack:
 
 ```bash
 docker-compose build
 docker-compose --env-file .env up
 ```
 
-The dashboard will be available on ports `3000` and `3002` as defined in the
-compose file.
+The dashboard will be available on ports `3000` and `3002` as defined in the compose file.
 
 ## Interactive Setup
 
-Run `node scripts/setup.js` for a guided configuration. This script prompts for
-your InfluxDB details, port, and the location to store your Garmin cookie. It
-writes these values to `.env` and then tries to call `scripts/save-garmin-session.js`
-to save the Garmin session file automatically.
+Run `npm run setup` for a guided configuration. This script asks for your
+InfluxDB details and where to save the Garmin session. It writes everything to
+`.env` and attempts to store the session for you.
 
 ## Mock Mode
 
