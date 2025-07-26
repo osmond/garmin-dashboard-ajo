@@ -1,12 +1,7 @@
 version: '3'
 services:
-  api:
+  app:
     build: .
-    command: npm --prefix api start
-    ports:
-      - "3002:3002"
-  frontend:
-    build: .
-    command: npm --prefix frontend-next run dev
     ports:
       - "3000:3000"
+      - "3002:3002"
