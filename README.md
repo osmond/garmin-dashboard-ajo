@@ -95,6 +95,10 @@ node scripts/backfill-garmin-history.js 2024-01-01 2024-01-07
 
 # or the last 30 days
 node scripts/backfill-garmin-history.js --days 30
+
+# specify a custom checkpoint file or reset progress
+node scripts/backfill-garmin-history.js --checkpoint state.txt --days 30
+node scripts/backfill-garmin-history.js --reset 2024-01-01 2024-01-31
 ```
 
 ## API Reference
