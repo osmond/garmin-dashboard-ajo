@@ -1,12 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
-let GarminConnect;
-try {
-  ({ GarminConnect } = require('garmin-connect'));
-} catch (e) {
-  ({ GarminConnect } = require('../api/node_modules/garmin-connect'));
-}
+const { GarminConnect } = require('garmin-connect');
 
 const args = process.argv.slice(2);
 const outputArg = args[0] && !args[0].startsWith('--') ? args[0] : undefined;

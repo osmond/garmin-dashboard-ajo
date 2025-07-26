@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "This project contains a simple Express API for fetching Garmin data and a frontend built with Next.js.",
   "main": "index.js",
+  "workspaces": [
+    "api",
+    "frontend-next"
+  ],
   "scripts": {
     "test": "npm test --prefix api && npm test --prefix frontend-next",
     "prepare": "husky install",
