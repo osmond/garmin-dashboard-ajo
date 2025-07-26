@@ -76,7 +76,17 @@ app.get('/api/history', async (req, res) => {
 });
 
 app.get('/api/activities', async (req, res) => {
-  const limit = req.query.limit ? parseInt(req.query.limit, 10) : undefined;
+  const rawLimit = req.query.limit;
+  let limit: number | undefined;
+
+  if (typeof rawLimit === 'string') {
+    const parsed = parseInt(rawLimit, 10);
+    limit = isNaN(parsed) ? undefined : parsed;
+  } else if (Array.isArray(rawLimit) && typeof rawLimit[0] === 'string') {
+    const parsed = parseInt(rawLimit[0], 10);
+    limit = isNaN(parsed) ? undefined : parsed;
+  }
+
   try {
     const acts = await fetchRecentActivities(limit);
     res.json(acts);
