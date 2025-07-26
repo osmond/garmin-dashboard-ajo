@@ -4,6 +4,28 @@ const path = require('path')
 const readline = require('readline')
 const { execSync } = require('child_process')
 
+function escapeValue(value) {
+  return JSON.stringify(value).slice(1, -1)
+}
+
+function buildEnvData({
+  influxUrl,
+  influxToken,
+  influxOrg,
+  influxBucket,
+  port,
+  cookiePath,
+}) {
+  return `INFLUX_URL=${escapeValue(influxUrl)}
+INFLUX_TOKEN=${escapeValue(influxToken)}
+INFLUX_ORG=${escapeValue(influxOrg)}
+INFLUX_BUCKET=${escapeValue(influxBucket)}
+PORT=${escapeValue(port)}
+GARMIN_COOKIE_PATH=${escapeValue(cookiePath)}
+NEXT_PUBLIC_MOCK_MODE=false
+`
+}
+
 async function prompt(question) {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -24,14 +46,14 @@ async function prompt(question) {
   const port = (await prompt('API port [3002]: ')) || '3002'
   const cookiePath = await prompt('Path to save Garmin session JSON: ')
 
-  const envData = `INFLUX_URL=${influxUrl}
-INFLUX_TOKEN=${influxToken}
-INFLUX_ORG=${influxOrg}
-INFLUX_BUCKET=${influxBucket}
-PORT=${port}
-GARMIN_COOKIE_PATH=${cookiePath}
-NEXT_PUBLIC_MOCK_MODE=false
-`
+  const envData = buildEnvData({
+    influxUrl,
+    influxToken,
+    influxOrg,
+    influxBucket,
+    port,
+    cookiePath,
+  })
   fs.writeFileSync(path.resolve('.env'), envData)
   console.log('Environment written to .env')
 
@@ -47,3 +69,5 @@ NEXT_PUBLIC_MOCK_MODE=false
     )
   }
 })()
+
+module.exports = { buildEnvData, escapeValue }
