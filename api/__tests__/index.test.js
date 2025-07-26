@@ -1,6 +1,6 @@
 const request = require('supertest');
 
-jest.mock('../scraper', () => ({
+jest.mock('../scraper.ts', () => ({
   fetchGarminSummary: jest.fn(),
   fetchWeeklySummary: jest.fn(),
   fetchHistory: jest.fn(),
@@ -26,8 +26,8 @@ beforeEach(() => {
     fetchHistory,
     fetchActivityRoute,
     fetchRecentActivities,
-  } = require('../scraper'));
-  app = require('../index');
+  } = require('../scraper.ts'));
+  app = require('../index.ts').default;
 });
 
 describe('GET /api/summary', () => {

@@ -29,7 +29,7 @@ describe('fetchGarminSummary', () => {
     delete process.env.INFLUX_URL;
     delete process.env.GARMIN_COOKIE_PATH;
     jest.resetModules();
-    ({ fetchGarminSummary, fetchActivityRoute, fetchRecentActivities } = require('../scraper'));
+    ({ fetchGarminSummary, fetchActivityRoute, fetchRecentActivities } = require('../scraper.ts'));
     ({ instance: gcClient } = require('garmin-connect'));
     const fs = require('fs');
     const path = require('path');
@@ -159,7 +159,7 @@ describe('login caching', () => {
 
   beforeEach(async () => {
     jest.resetModules();
-    ({ login } = require('../scraper'));
+    ({ login } = require('../scraper.ts'));
     ({ instance: gcClient } = require('garmin-connect'));
     const fs = require('fs');
     const path = require('path');
