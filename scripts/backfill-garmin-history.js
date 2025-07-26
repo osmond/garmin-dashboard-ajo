@@ -114,32 +114,26 @@ if (start > end) {
     };
   }
 
-  const summaries = await Promise.all(dates.map((d) => limit(() => fetchSummary(d))));
+  const writeApi = influx.getWriteApi(
+    process.env.INFLUX_ORG,
+    process.env.INFLUX_BUCKET
+  );
 
-  summaries.sort((a, b) => new Date(a.time) - new Date(b.time));
-
-  const BATCH_SIZE = 50;
-  for (let i = 0; i < summaries.length; i += BATCH_SIZE) {
-    const batch = summaries.slice(i, i + BATCH_SIZE);
-    const writeApi = influx.getWriteApi(
-      process.env.INFLUX_ORG,
-      process.env.INFLUX_BUCKET
-    );
-    const points = batch.map((summary) => {
-      const p = new Point('garmin_summary')
-        .floatField('steps', summary.steps)
-        .floatField('resting_hr', summary.resting_hr)
-        .floatField('vo2max', summary.vo2max)
-        .floatField('sleep_hours', summary.sleep_hours);
-      if (summary.time) {
-        p.timestamp(new Date(summary.time));
-      }
-      return p;
-    });
-    writeApi.writePoints(points);
-    await writeApi.close();
-    const last = batch[batch.length - 1];
-    fs.writeFileSync(checkpointPath, last.time.slice(0, 10));
-    console.log(`Stored up to ${last.time.slice(0, 10)}`);
+  for (const date of dates) {
+    const summary = await limit(() => fetchSummary(date));
+    const p = new Point('garmin_summary')
+      .floatField('steps', summary.steps)
+      .floatField('resting_hr', summary.resting_hr)
+      .floatField('vo2max', summary.vo2max)
+      .floatField('sleep_hours', summary.sleep_hours);
+    if (summary.time) {
+      p.timestamp(new Date(summary.time));
+    }
+    writeApi.writePoint(p);
+    await writeApi.flush();
+    fs.writeFileSync(checkpointPath, summary.time.slice(0, 10));
+    console.log(`Stored up to ${summary.time.slice(0, 10)}`);
   }
+
+  await writeApi.close();
 })();
