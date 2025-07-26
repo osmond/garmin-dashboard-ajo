@@ -21,6 +21,9 @@ Personal Garmin data viewer that stores your stats in InfluxDB and shows them in
 
 ## Quick Start
 
+This project requires **Node.js 20**. If you use `nvm`, run `nvm use` in the
+repository root to activate the version listed in `.nvmrc`.
+
 1. **Clone and install**
 
    ```bash
