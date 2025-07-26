@@ -1,136 +1,84 @@
 # Garmin Dashboard AJO
 
-A small dashboard that collects your Garmin activity data. The backend is an Express API that stores daily summaries in InfluxDB and exposes history endpoints. The `frontend-next` directory contains a Next.js app with Tailwind CSS and shadcn-ui preconfigured.
+A self-hosted dashboard that syncs your Garmin stats to InfluxDB and visualizes them in a Next.js app.
 
-## Quick start
+![Dashboard demo](docs/demo.gif)
 
-1. **Use Node 18**
+## Table of Contents
 
-   Run `nvm use` to switch to the version in `.nvmrc`.
+- [Features](#features)
+- [Quick Start](#quick-start)
+- [Mock Mode](#mock-mode)
+- [Backfill History](#backfill-history)
+- [API Reference](#api-reference)
+- [Testing](#testing)
+- [License](#license)
 
-2. **Save your Garmin session**
+## Features
 
-   The script `save-garmin-session.js` writes your login cookies to the file
-   specified by `GARMIN_COOKIE_PATH`. It requires `GARMIN_EMAIL`,
-   `GARMIN_PASSWORD`, and `GARMIN_COOKIE_PATH` in the environment.
+- **Express API** with endpoints for daily summaries, weekly stats and individual activities
+- **Next.js frontend** using Tailwind CSS and shadcn-ui
+- **InfluxDB storage** for long-term metric history
 
-   Export the variables first and then run the script:
-
-   ```bash
-   export GARMIN_EMAIL=you@example.com
-   export GARMIN_PASSWORD=yourPassword
-   export GARMIN_COOKIE_PATH=$HOME/garmin_session.json
-   node scripts/save-garmin-session.js "$GARMIN_COOKIE_PATH"
-   ```
-
-   Or prefix the variables on a single line:
-
-   ```bash
-   GARMIN_EMAIL=you@example.com \
-   GARMIN_PASSWORD=yourPassword \
-   GARMIN_COOKIE_PATH=$HOME/garmin_session.json \
-   node scripts/save-garmin-session.js $GARMIN_COOKIE_PATH
-   ```
-
-
-   This generates `~/garmin_session.json` containing your login cookies. If
-   `GARMIN_COOKIE_PATH` is set, you can omit the path argument.
-
-
-3. **Create and edit `.env`** (keep it in the repository root so the API can load `../.env`)
-
-   ```bash
-   cp .env.example .env
-   ```
-
-   Set `GARMIN_COOKIE_PATH` to the session file and fill in the InfluxDB
-   options. The value **must** be an absolute path, for example
-   `GARMIN_COOKIE_PATH=$HOME/garmin_session.json`. Login will fail if the
-   path is not absolute. Change `PORT` if you need a different API
-   port (defaults to `3002`).
-
-4. **Install dependencies and start the frontend-next app**
-
-   ```bash
-   npm install
-   npm install --prefix api
-   npm install --prefix frontend-next
-   npm start    # starts both the API and Next.js dev server
-   ```
-
-   The repository uses **npm** for the Next.js frontend. Any yarn lockfile
-   has been removed to avoid CI warnings.
-
-   Storybook now officially supports React 19, so the `frontend-next`
-   dependencies install without additional flags.
-
-5. **Initialize shadcn-ui in frontend-next**
-
-   Run `npx shadcn@latest init` inside the `frontend-next` directory to
-   generate the `ui/` folder.
-
-6. **(Optional) Enable mock data mode**
-
-   Set `NEXT_PUBLIC_MOCK_MODE=true` in your `.env` file to load the sample
-   metrics from `frontend-next/public/mockData.json`. Any other value or leaving
-   the variable unset tells the app to fetch real Garmin data. This lets you
-   explore the dashboard without configuring the backend when using the mock
-   dataset.
-
-  The `frontend-next` directory contains a Next.js app.
-An additional endpoint `/api/activity/:id` returns GPX coordinates for a specific activity.
-
-### Running Tests
-
-Before running tests or preparing Git hooks, install dependencies in each
-workspace. The frontend-next dependencies must be installed or `npm test` will fail:
+## Quick Start
 
 ```bash
-npm install                # root dev tools
-npm install --prefix api   # API dependencies
-npm install --prefix frontend-next   # React app dependencies
+# clone the repo
+git clone https://github.com/yourname/garmin-dashboard-ajo.git
+cd garmin-dashboard-ajo
+
+# install dependencies
+npm install
+npm install --prefix api
+npm install --prefix frontend-next
+
+# copy environment file and save Garmin session
+cp .env.example .env
+node scripts/save-garmin-session.js $HOME/garmin_session.json --email you@example.com --password yourPassword
+
+# edit .env to point to the session file and your InfluxDB settings
+
+# start API and Next.js app
+npm start
 ```
 
+## Mock Mode
 
-Run all API and React tests with:
+Set `NEXT_PUBLIC_MOCK_MODE=true` in `.env` to load metrics from `frontend-next/public/mockData.json` without contacting Garmin.
 
-```bash
-npm test   # runs "npm test --prefix api" and "npm test --prefix frontend-next"
-```
+## Backfill History
 
-### Required environment variables
-
-- `GARMIN_EMAIL` and `GARMIN_PASSWORD` for `save-garmin-session.js`
-- `GARMIN_COOKIE_PATH` location of the saved session
-- `NEXT_PUBLIC_MOCK_MODE` set to `true` reads `frontend-next/public/mockData.json`.
-  Any other value or leaving the variable unset fetches Garmin data instead.
-
-### Backfill historical data
-
-Use `scripts/backfill-garmin-history.js` to populate InfluxDB with data from
-past dates. Provide a start and end date or a number of days to backfill.
-The script also expects `GARMIN_EMAIL`, `GARMIN_PASSWORD`, and
-`GARMIN_COOKIE_PATH` in the environment (or a populated `.env`).
+Populate InfluxDB with older data using `scripts/backfill-garmin-history.js`:
 
 ```bash
-# backfill between two dates (inclusive)
+# backfill a range of dates
 node scripts/backfill-garmin-history.js 2024-01-01 2024-01-07
 
-# or backfill the last 30 days
+# or the last 30 days
 node scripts/backfill-garmin-history.js --days 30
 ```
 
-For large backfills (e.g. 10 years of history) set `--days` to a big number:
+## API Reference
+
+| Endpoint | Description |
+| -------- | ----------- |
+| `GET /api/health` | simple health check |
+| `GET /api/summary` | fetch today"s summary |
+| `GET /api/weekly` | last 7 days of data |
+| `GET /api/history?days=n` | historic summaries |
+| `GET /api/activities` | recent activities |
+| `GET /api/activity/:id` | GPX points for an activity |
+
+## Testing
+
+Install dependencies and run all Jest tests:
 
 ```bash
-node scripts/backfill-garmin-history.js --days 3650
+npm install
+npm install --prefix api
+npm install --prefix frontend-next
+npm test
 ```
-
-### Viewing long-term history
-
-The dashboard's History tab queries `/api/history?days=N` using the number
-entered in the input field. Increase the days value to load more past data
-after running the backfill script.
 
 ## License
 
