@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useDebouncedCallback } from 'use-debounce'
 import HistoryChart from '../HistoryChart'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import Spinner from '@/components/Spinner'
@@ -8,6 +9,9 @@ import { Input } from '@/components/ui/input'
 
 export default function HistoryTab() {
   const [days, setDays] = useState(30)
+  const setDaysDebounced = useDebouncedCallback((value: number) => {
+    setDays(value)
+  }, 300)
   const { data, isLoading, error } = useDashboardData({ historyDays: days })
 
   if (isLoading) return <Spinner />
@@ -39,7 +43,7 @@ export default function HistoryTab() {
             type="number"
             min={1}
             value={days}
-            onChange={(e) => setDays(Number(e.target.value))}
+            onChange={(e) => setDaysDebounced(Number(e.target.value))}
             className="w-24"
           />
         </div>
