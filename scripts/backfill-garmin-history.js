@@ -1,9 +1,26 @@
 #!/usr/bin/env node
+const fs = require('fs');
+const path = require('path');
 const { login, gcClient } = require('../api/scraper');
 const { InfluxDB, Point } = require('@influxdata/influxdb-client');
-const pLimit = require('p-limit');
 
 const args = process.argv.slice(2);
+
+let checkpointPath = path.resolve('.backfill-checkpoint');
+const ckIdx = args.indexOf('--checkpoint');
+if (ckIdx !== -1) {
+  checkpointPath = path.resolve(args[ckIdx + 1]);
+  args.splice(ckIdx, 2);
+}
+
+const resetIdx = args.indexOf('--reset');
+const reset = resetIdx !== -1;
+if (reset) {
+  args.splice(resetIdx, 1);
+  if (fs.existsSync(checkpointPath)) {
+    fs.unlinkSync(checkpointPath);
+  }
+}
 
 function usage() {
   console.error('Usage: node scripts/backfill-garmin-history.js <start> <end>');
@@ -33,6 +50,23 @@ if (args.includes('--days')) {
   usage();
 }
 
+if (!reset && fs.existsSync(checkpointPath)) {
+  const lastStr = fs.readFileSync(checkpointPath, 'utf8').trim();
+  const last = new Date(lastStr);
+  if (!isNaN(last)) {
+    const next = new Date(last);
+    next.setDate(next.getDate() + 1);
+    if (next > start) {
+      start = next;
+    }
+  }
+}
+
+if (start > end) {
+  console.log('Nothing to backfill');
+  process.exit(0);
+}
+
 (async () => {
   try {
     await login();
@@ -40,40 +74,6 @@ if (args.includes('--days')) {
     console.error('Login failed:', err.message);
     process.exit(1);
   }
-  const dates = [];
-  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-    dates.push(new Date(d));
-  }
-
-  const limit = pLimit(5);
-  const results = await Promise.all(
-    dates.map(date =>
-      limit(async () => {
-        const dateStr = date.toISOString().slice(0, 10);
-        console.log(`Backfilling ${dateStr}...`);
-        try {
-          const [steps, hr, sleep] = await Promise.all([
-            gcClient.getSteps(date),
-            gcClient.getHeartRate(date),
-            gcClient.getSleepData(date),
-          ]);
-          return {
-            steps,
-            resting_hr: hr.restingHeartRate,
-            vo2max: hr.vo2max || 0,
-            sleep_hours: (sleep.dailySleepDTO.sleepTimeSeconds || 0) / 3600,
-            time: date.toISOString(),
-          };
-        } catch (err) {
-          console.error(`Failed to backfill ${dateStr}:`, err.message);
-          return null;
-        }
-      })
-    )
-  );
-
-  const summaries = results.filter(Boolean);
-
   if (
     !process.env.INFLUX_URL ||
     !process.env.INFLUX_TOKEN ||
@@ -88,27 +88,42 @@ if (args.includes('--days')) {
     url: process.env.INFLUX_URL,
     token: process.env.INFLUX_TOKEN,
   });
-  const BATCH_SIZE = 50;
 
-  for (let i = 0; i < summaries.length; i += BATCH_SIZE) {
-    const batch = summaries.slice(i, i + BATCH_SIZE);
-    const writeApi = influx.getWriteApi(
-      process.env.INFLUX_ORG,
-      process.env.INFLUX_BUCKET
-    );
-    const points = batch.map(s => {
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const date = new Date(d);
+    const dateStr = date.toISOString().slice(0, 10);
+    console.log(`Backfilling ${dateStr}...`);
+    try {
+      const [steps, hr, sleep] = await Promise.all([
+        gcClient.getSteps(date),
+        gcClient.getHeartRate(date),
+        gcClient.getSleepData(date),
+      ]);
+      const summary = {
+        steps,
+        resting_hr: hr.restingHeartRate,
+        vo2max: hr.vo2max || 0,
+        sleep_hours: (sleep.dailySleepDTO.sleepTimeSeconds || 0) / 3600,
+        time: date.toISOString(),
+      };
+      const writeApi = influx.getWriteApi(
+        process.env.INFLUX_ORG,
+        process.env.INFLUX_BUCKET
+      );
       const p = new Point('garmin_summary')
-        .floatField('steps', s.steps)
-        .floatField('resting_hr', s.resting_hr)
-        .floatField('vo2max', s.vo2max || 0)
-        .floatField('sleep_hours', s.sleep_hours);
-      if (s.time) {
-        p.timestamp(new Date(s.time));
+        .floatField('steps', summary.steps)
+        .floatField('resting_hr', summary.resting_hr)
+        .floatField('vo2max', summary.vo2max || 0)
+        .floatField('sleep_hours', summary.sleep_hours);
+      if (summary.time) {
+        p.timestamp(new Date(summary.time));
       }
-      return p;
-    });
-    writeApi.writePoints(points);
-    await writeApi.close();
-    console.log(`Stored ${batch.length} days`);
+      writeApi.writePoint(p);
+      await writeApi.close();
+      fs.writeFileSync(checkpointPath, dateStr);
+      console.log(`Stored ${dateStr}`);
+    } catch (err) {
+      console.error(`Failed to backfill ${dateStr}:`, err.message);
+    }
   }
 })();
