@@ -8,7 +8,7 @@ const MapView = dynamic(() => import('@/components/Dashboard/MapView'), {
 })
 import InsightsChart from '@/components/Dashboard/InsightsChart'
 import ActivitiesTable from '@/components/Dashboard/ActivitiesTable'
-import HistoryTab from '@/components/Dashboard/HistoryTab'
+const HistoryTab = dynamic(() => import('@/components/Dashboard/HistoryTab'))
 import Header from '@/components/Header'
 import SessionStatus from '@/components/SessionStatus'
 

@@ -1,7 +1,10 @@
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+const config = require("./config");
 const express = require('express');
 const cron = require('node-cron');
+const NodeCache = require("node-cache");
+const cache = new NodeCache({ stdTTL: 60 });
 
 const {
   fetchGarminSummary,
@@ -22,6 +25,7 @@ app.get('/api/health', (req, res) => {
 app.get('/api/summary', async (req, res) => {
   try {
     const summary = await fetchGarminSummary();
+    cache.set("summary", summary);
     res.json(summary);
   } catch (err) {
     console.error(err);
