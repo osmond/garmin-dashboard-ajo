@@ -28,8 +28,6 @@ cd garmin-dashboard-ajo
 
 # install dependencies
 npm install
-npm install --prefix api
-npm install --prefix frontend-next
 
 # copy environment file and add your Garmin credentials
 cp .env.example .env
@@ -116,8 +114,6 @@ Install dependencies and run all Jest tests:
 
 ```bash
 npm install
-npm install --prefix api
-npm install --prefix frontend-next
 npm test
 ```
 
