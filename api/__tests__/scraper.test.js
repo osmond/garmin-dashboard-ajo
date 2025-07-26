@@ -71,6 +71,9 @@ describe('fetchGarminSummary', () => {
 
 describe('fetchActivityRoute', () => {
   beforeEach(async () => {
+    jest.resetModules();
+    ({ fetchActivityRoute } = require('../scraper.ts'));
+    ({ instance: gcClient } = require('garmin-connect'));
     const fs = require('fs');
     const path = require('path');
     const cookiePath = path.join(__dirname, 'session.json');
@@ -107,6 +110,9 @@ describe('fetchActivityRoute', () => {
 
 describe('fetchRecentActivities', () => {
   beforeEach(async () => {
+    jest.resetModules();
+    ({ fetchRecentActivities } = require('../scraper.ts'));
+    ({ instance: gcClient } = require('garmin-connect'));
     const fs = require('fs');
     const path = require('path');
     const cookiePath = path.join(__dirname, 'session.json');
