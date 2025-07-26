@@ -58,7 +58,14 @@ app.get('/api/weekly', async (req, res) => {
 });
 
 app.get('/api/history', async (req, res) => {
-  const days = parseInt(req.query.days) || 7;
+  let days = 7;
+  if (req.query.days !== undefined) {
+    days = Number(req.query.days);
+    if (!Number.isInteger(days) || days <= 0 || days > 3650) {
+      res.status(400).json({ error: 'Invalid days parameter' });
+      return;
+    }
+  }
   try {
     const data = await fetchHistory(days);
     res.json(data);

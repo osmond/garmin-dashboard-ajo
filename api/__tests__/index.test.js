@@ -75,6 +75,26 @@ describe('GET /api/history', () => {
     expect(res.body).toEqual([{ time: '2024-01-01', steps: 1 }]);
     expect(fetchHistory).toHaveBeenCalledWith(30);
   });
+
+  it('defaults to 7 days when parameter is missing', async () => {
+    fetchHistory.mockResolvedValue([{ time: '2024-01-01', steps: 1 }]);
+    const res = await request(app).get('/api/history');
+    expect(res.status).toBe(200);
+    expect(fetchHistory).toHaveBeenCalledWith(7);
+  });
+
+  it('returns 400 when days parameter is invalid', async () => {
+    const res = await request(app).get('/api/history?days=-5');
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({ error: 'Invalid days parameter' });
+    expect(fetchHistory).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when days parameter exceeds maximum', async () => {
+    const res = await request(app).get('/api/history?days=4000');
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({ error: 'Invalid days parameter' });
+  });
 });
 
 describe('GET /api/activity/:id', () => {
