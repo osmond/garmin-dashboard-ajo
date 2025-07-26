@@ -55,6 +55,13 @@ to save the Garmin session file automatically.
 
 Set `NEXT_PUBLIC_MOCK_MODE=true` in `.env` to load metrics from `frontend-next/public/mockData.json` without contacting Garmin.
 
+### Data fetching
+
+All dashboard components use a `useDashboardData` hook which automatically
+switches between live Garmin requests and the bundled mock data based on the
+`NEXT_PUBLIC_MOCK_MODE` variable. Tests can mock this hook to provide stable
+fixtures.
+
 ## Backfill History
 
 Populate InfluxDB with older data using `scripts/backfill-garmin-history.js`:

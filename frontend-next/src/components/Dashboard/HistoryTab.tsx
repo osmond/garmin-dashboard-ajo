@@ -3,15 +3,12 @@ import HistoryChart from '../HistoryChart'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import Spinner from '@/components/Spinner'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import useMockData from '@/hooks/useMockData'
-import useGarminData from '@/hooks/useGarminData'
+import useDashboardData from '@/hooks/useDashboardData'
 import { Input } from '@/components/ui/input'
 
 export default function HistoryTab() {
   const [days, setDays] = useState(30)
-  const useData =
-    process.env.NEXT_PUBLIC_MOCK_MODE === 'true' ? useMockData : useGarminData
-  const { data, isLoading, error } = useData({ historyDays: days })
+  const { data, isLoading, error } = useDashboardData({ historyDays: days })
 
   if (isLoading) return <Spinner />
   if (error) {
