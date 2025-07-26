@@ -1,3 +1,4 @@
+process.env.NODE_ENV = 'test';
 const { buildEnvData } = require('../../scripts/setup.js');
 
 describe('buildEnvData', () => {
