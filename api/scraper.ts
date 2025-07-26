@@ -1,9 +1,9 @@
 
-const { GarminConnect } = require('garmin-connect');
-const { InfluxDB, Point } = require('@influxdata/influxdb-client');
-const fs = require('fs');
-const path = require('path');
-const { XMLParser } = require('fast-xml-parser');
+import { GarminConnect } from 'garmin-connect';
+import { InfluxDB, Point } from '@influxdata/influxdb-client';
+import fs from 'fs';
+import path from 'path';
+import { XMLParser } from 'fast-xml-parser';
 
 const gcClient = new GarminConnect({ username: '', password: '' });
 
@@ -163,7 +163,7 @@ async function fetchRecentActivities(limit = 10) {
   }));
 }
 
-module.exports = {
+export {
   fetchGarminSummary,
   fetchWeeklySummary,
   fetchHistory,

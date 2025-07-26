@@ -20,7 +20,9 @@
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "@babel/preset-env": "^7.24.5",
+    "@babel/preset-typescript": "^7.24.5"
   },
   "scripts": {
     "test": "jest",
