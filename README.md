@@ -55,6 +55,16 @@ repository root to activate the version listed in `.nvmrc`.
 
 Open [http://localhost:3000](http://localhost:3000) in your browser. If your phone is on the same network, visit `http://<your-computer-ip>:3000` to view it there too.
 
+### Development Scripts
+
+Use these helpers to run the parts individually during development:
+
+```bash
+npm run server    # start only the Express API
+npm run web       # start only the Next.js frontend
+npm run dev       # start both concurrently
+```
+
 ## Docker
 Use Docker if you prefer a single command deployment. The compose file builds
 the image and runs both the API and frontend containers. Copy `.env.example`
