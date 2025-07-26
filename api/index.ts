@@ -24,6 +24,12 @@ app.get('/api/health', (req, res) => {
 
 app.get('/api/summary', async (req, res) => {
   try {
+    const cached = cache.get("summary");
+    if (cached) {
+      res.json(cached);
+      return;
+    }
+
     const summary = await fetchGarminSummary();
     cache.set("summary", summary);
     res.json(summary);

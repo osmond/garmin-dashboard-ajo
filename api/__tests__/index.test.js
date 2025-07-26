@@ -8,14 +8,27 @@ jest.mock('../scraper', () => ({
   fetchRecentActivities: jest.fn(),
 }));
 
-const app = require('../index');
-const {
-  fetchGarminSummary,
-  fetchWeeklySummary,
-  fetchHistory,
-  fetchActivityRoute,
-  fetchRecentActivities,
-} = require('../scraper');
+// Avoid loading the real config which uses ES module syntax
+jest.mock('../config', () => ({}));
+
+let app;
+let fetchGarminSummary;
+let fetchWeeklySummary;
+let fetchHistory;
+let fetchActivityRoute;
+let fetchRecentActivities;
+
+beforeEach(() => {
+  jest.resetModules();
+  ({
+    fetchGarminSummary,
+    fetchWeeklySummary,
+    fetchHistory,
+    fetchActivityRoute,
+    fetchRecentActivities,
+  } = require('../scraper'));
+  app = require('../index');
+});
 
 describe('GET /api/summary', () => {
   it('responds with summary json', async () => {
@@ -23,6 +36,18 @@ describe('GET /api/summary', () => {
     const res = await request(app).get('/api/summary');
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ steps: 1 });
+  });
+
+  it('uses cached result on subsequent requests', async () => {
+    fetchGarminSummary.mockResolvedValue({ steps: 2 });
+    const first = await request(app).get('/api/summary');
+    expect(first.body).toEqual({ steps: 2 });
+
+    fetchGarminSummary.mockClear();
+    const second = await request(app).get('/api/summary');
+    expect(second.status).toBe(200);
+    expect(second.body).toEqual({ steps: 2 });
+    expect(fetchGarminSummary).not.toHaveBeenCalled();
   });
 
   it('returns 500 on error', async () => {
