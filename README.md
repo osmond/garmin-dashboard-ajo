@@ -8,6 +8,7 @@ A self-hosted dashboard that syncs your Garmin stats to InfluxDB and visualizes 
 
 - [Features](#features)
 - [Quick Start](#quick-start)
+- [Interactive Setup](#interactive-setup)
 - [Mock Mode](#mock-mode)
 - [Backfill History](#backfill-history)
 - [API Reference](#api-reference)
@@ -42,6 +43,13 @@ node scripts/save-garmin-session.js $HOME/garmin_session.json --email you@exampl
 # start API and Next.js app
 npm start
 ```
+
+## Interactive Setup
+
+Run `node scripts/setup.js` for a guided configuration. This script prompts for
+your InfluxDB details, port, and the location to store your Garmin cookie. It
+writes these values to `.env` and then tries to call `scripts/save-garmin-session.js`
+to save the Garmin session file automatically.
 
 ## Mock Mode
 
