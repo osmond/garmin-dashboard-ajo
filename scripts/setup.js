@@ -82,6 +82,18 @@ async function prompt(question) {
   }
 
   if (!isTest) {
+    const missing = []
+    if (!process.env.GARMIN_EMAIL) missing.push('GARMIN_EMAIL')
+    if (!process.env.GARMIN_PASSWORD) missing.push('GARMIN_PASSWORD')
+    if (missing.length) {
+      console.warn(
+        `Warning: ${missing.join(' and ')} not set. ` +
+          'Session save will fail unless you provide these variables.'
+      )
+    }
+  }
+
+  if (!isTest) {
     try {
       execSync(`node scripts/save-garmin-session.js "${cookiePath}"`, {
         stdio: 'inherit',

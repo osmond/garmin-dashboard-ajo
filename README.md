@@ -38,14 +38,14 @@ repository root to activate the version listed in `.nvmrc`.
    ```bash
    cp .env.example .env
    ```
-   Edit the file to fill in your InfluxDB details.
+   Edit the file and fill in **all** variables. Be sure to set `GARMIN_COOKIE_PATH`, `GARMIN_EMAIL` and `GARMIN_PASSWORD` in addition to your InfluxDB details.
 
 3. **Save your Garmin session**
 
    ```bash
-   node scripts/save-garmin-session.js ~/garmin_session.json --email you@example.com --password yourPassword
+   node scripts/save-garmin-session.js ~/garmin_session.json --email "$GARMIN_EMAIL" --password "$GARMIN_PASSWORD"
    ```
-   Update `GARMIN_COOKIE_PATH` in `.env` to point to the newly created `garmin_session.json`.
+   The command will create the session file. Ensure that `GARMIN_COOKIE_PATH` in `.env` matches the path you use here.
 
 4. **Start the dashboard**
 
@@ -89,7 +89,8 @@ The dashboard will be available on ports `3000` and `3002` as defined in the com
 
 Run `npm run setup` for a guided configuration. This script asks for your
 InfluxDB details and where to save the Garmin session. It writes everything to
-`.env` and attempts to store the session for you.
+`.env` and attempts to store the session for you. Ensure `GARMIN_EMAIL` and
+`GARMIN_PASSWORD` are set in your environment so the session can be created.
 
 ## Mock Mode (tests only)
 
