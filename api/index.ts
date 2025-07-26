@@ -1,19 +1,19 @@
-const path = require('path');
+import path from 'path';
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
-const config = require("./config");
-const express = require('express');
-const cron = require('node-cron');
-const NodeCache = require("node-cache");
+import config from './config';
+import express from 'express';
+import cron from 'node-cron';
+import NodeCache from 'node-cache';
 const cache = new NodeCache({ stdTTL: 60 });
 
-const {
+import {
   fetchGarminSummary,
   fetchWeeklySummary,
   fetchHistory,
   fetchActivityRoute,
   fetchRecentActivities,
   login,
-} = require('./scraper');
+} from './scraper';
 
 const app = express();
 const port = process.env.PORT || 3002;
@@ -108,4 +108,4 @@ if (require.main === module) {
   })();
 }
 
-module.exports = app;
+export default app;
