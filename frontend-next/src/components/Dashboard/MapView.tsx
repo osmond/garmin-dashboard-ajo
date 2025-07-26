@@ -62,7 +62,7 @@ export default function MapView() {
     <Card>
       <CardHeader className="flex items-center justify-between">
         <CardTitle>Map View</CardTitle>
-        <Button size="sm" variant="outline" onClick={() => setHeat((h) => !h)}>
+        <Button size="sm" variant="outline" aria-label="Toggle heatmap" onClick={() => setHeat((h) => !h)}>
           {heat ? 'Show Route' : 'Show Heatmap'}
         </Button>
       </CardHeader>
