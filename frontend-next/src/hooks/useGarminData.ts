@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { MockData } from './useMockData'
 
-interface Options {
+export interface Options {
   historyDays?: number
   activityLimit?: number
 }

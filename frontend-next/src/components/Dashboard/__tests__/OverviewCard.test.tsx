@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { beforeEach, afterEach, jest, test, expect } from '@jest/globals'
-import OverviewCard from '../OverviewCard'
 import mockData from '../../../../public/mockData.json'
+import useDashboardData from '../../../hooks/useDashboardData'
+import OverviewCard from '../OverviewCard'
 
 beforeEach(() => {
   process.env.NEXT_PUBLIC_MOCK_MODE = 'true'
