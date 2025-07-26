@@ -22,7 +22,6 @@ INFLUX_ORG=${escapeValue(influxOrg)}
 INFLUX_BUCKET=${escapeValue(influxBucket)}
 PORT=${escapeValue(port)}
 GARMIN_COOKIE_PATH=${escapeValue(cookiePath)}
-NEXT_PUBLIC_MOCK_MODE=false
 `
 }
 

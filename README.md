@@ -77,16 +77,12 @@ Run `npm run setup` for a guided configuration. This script asks for your
 InfluxDB details and where to save the Garmin session. It writes everything to
 `.env` and attempts to store the session for you.
 
-## Mock Mode
+## Mock Mode (tests only)
 
-Set `NEXT_PUBLIC_MOCK_MODE=true` in `.env` to load metrics from `frontend-next/public/mockData.json` without contacting Garmin.
-
-### Data fetching
-
-All dashboard components use a `useDashboardData` hook which automatically
-switches between live Garmin requests and the bundled mock data based on the
-`NEXT_PUBLIC_MOCK_MODE` variable. Tests can mock this hook to provide stable
-fixtures.
+The repository includes a small mock dataset for Jest tests. Setting
+`NEXT_PUBLIC_MOCK_MODE=true` makes the `useDashboardData` hook return this
+static data instead of hitting the Garmin API. You generally will not use this
+flag in day‑to‑day runs, but the tests rely on it to simulate stable results.
 
 ## Backfill History
 
