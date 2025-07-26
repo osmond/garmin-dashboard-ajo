@@ -2,8 +2,6 @@
 
 A self-hosted dashboard that syncs your Garmin stats to InfluxDB and visualizes them in a Next.js app.
 
-![Dashboard demo](docs/demo.gif)
-
 ## Table of Contents
 
 - [Features](#features)
