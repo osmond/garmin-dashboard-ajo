@@ -31,9 +31,7 @@ repository root to activate the version listed in `.nvmrc`.
    cd garmin-dashboard-ajo
    npm install
    ```
-   If you work inside the `frontend-next/` folder separately from the root,
-   run `npm install` in that directory too so the Next.js frontend has its own
-   dependencies installed.
+   The root `package-lock.json` governs dependencies for both `api` and `frontend-next`, so run `npm install` from the repository root.
 
 2. **Create your `.env` file**
 
