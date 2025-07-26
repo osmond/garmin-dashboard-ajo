@@ -32,8 +32,9 @@ npm install
 npm install --prefix api
 npm install --prefix frontend-next
 
-# copy environment file and save Garmin session
+# copy environment file and add your Garmin credentials
 cp .env.example .env
+# edit GARMIN_EMAIL and GARMIN_PASSWORD in .env
 node scripts/save-garmin-session.js $HOME/garmin_session.json --email you@example.com --password yourPassword
 
 # edit .env to point to the session file and your InfluxDB settings
