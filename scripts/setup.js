@@ -36,14 +36,37 @@ async function prompt(question) {
 }
 
 ;(async () => {
-  const influxUrl =
-    (await prompt('InfluxDB URL [http://localhost:8086]: ')) ||
-    'http://localhost:8086'
-  const influxToken = await prompt('InfluxDB token: ')
-  const influxOrg = await prompt('InfluxDB org: ')
-  const influxBucket = (await prompt('InfluxDB bucket [garmin]: ')) || 'garmin'
-  const port = (await prompt('API port [3002]: ')) || '3002'
-  const cookiePath = await prompt('Path to save Garmin session JSON: ')
+  const isTest = process.env.NODE_ENV === 'test'
+  const defaults = {
+    influxUrl: 'http://localhost:8086',
+    influxToken: 'stub-token',
+    influxOrg: 'stub-org',
+    influxBucket: 'garmin',
+    port: '3002',
+    cookiePath: '/tmp/session.json',
+  }
+
+  const ask = async (question, def) => {
+    if (isTest) return def
+    const answer = await prompt(question)
+    return answer || def
+  }
+
+  const influxUrl = await ask(
+    'InfluxDB URL [http://localhost:8086]: ',
+    defaults.influxUrl
+  )
+  const influxToken = await ask('InfluxDB token: ', defaults.influxToken)
+  const influxOrg = await ask('InfluxDB org: ', defaults.influxOrg)
+  const influxBucket = await ask(
+    'InfluxDB bucket [garmin]: ',
+    defaults.influxBucket
+  )
+  const port = await ask('API port [3002]: ', defaults.port)
+  const cookiePath = await ask(
+    'Path to save Garmin session JSON: ',
+    defaults.cookiePath
+  )
 
   const envData = buildEnvData({
     influxUrl,
@@ -53,19 +76,23 @@ async function prompt(question) {
     port,
     cookiePath,
   })
-  fs.writeFileSync(path.resolve('.env'), envData)
-  console.log('Environment written to .env')
+  if (!isTest) {
+    fs.writeFileSync(path.resolve('.env'), envData)
+    console.log('Environment written to .env')
+  }
 
-  try {
-    execSync(`node scripts/save-garmin-session.js "${cookiePath}"`, {
-      stdio: 'inherit',
-    })
-    console.log('Garmin session saved')
-  } catch (err) {
-    console.error(
-      'Failed to save session. Run scripts/save-garmin-session.js manually.',
-      err
-    )
+  if (!isTest) {
+    try {
+      execSync(`node scripts/save-garmin-session.js "${cookiePath}"`, {
+        stdio: 'inherit',
+      })
+      console.log('Garmin session saved')
+    } catch (err) {
+      console.error(
+        'Failed to save session. Run scripts/save-garmin-session.js manually.',
+        err
+      )
+    }
   }
 })()
 
