@@ -45,8 +45,10 @@ npm start
 ## Docker
 
 The project includes a `docker-compose.yml` that builds the Node image and runs
-both the API and frontend containers. First copy the sample environment file and
-fill in the required variables:
+both the API and frontend containers. The Dockerfile now uses a multi-stage
+build and installs dependencies with `NODE_ENV=production` and
+`npm ci --omit=dev` to keep the final image small. First copy the sample
+environment file and fill in the required variables:
 
 ```bash
 cp .env.example .env
