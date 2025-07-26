@@ -11,6 +11,9 @@
     "test": "npm test --prefix api && npm test --prefix frontend-next",
     "prepare": "husky install",
     "start": "concurrently \"npm start --prefix api\" \"npm run dev --prefix frontend-next\"",
+    "server": "cd api && npm start",
+    "web": "cd frontend-next && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run web\"",
     "lint": "npm run lint --prefix frontend-next",
     "format": "prettier --write .",
     "setup": "node scripts/setup.js"
