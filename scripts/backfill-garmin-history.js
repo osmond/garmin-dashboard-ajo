@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { login, gcClient } = require('../api/scraper');
 const { InfluxDB, Point } = require('@influxdata/influxdb-client');
+const pLimit = require('p-limit');
 
 const args = process.argv.slice(2);
 
@@ -89,41 +90,56 @@ if (start > end) {
     token: process.env.INFLUX_TOKEN,
   });
 
+  const dates = [];
   for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-    const date = new Date(d);
+    dates.push(new Date(d));
+  }
+
+  const limit = pLimit(5);
+
+  async function fetchSummary(date) {
     const dateStr = date.toISOString().slice(0, 10);
     console.log(`Backfilling ${dateStr}...`);
-    try {
-      const [steps, hr, sleep] = await Promise.all([
-        gcClient.getSteps(date),
-        gcClient.getHeartRate(date),
-        gcClient.getSleepData(date),
-      ]);
-      const summary = {
-        steps,
-        resting_hr: hr.restingHeartRate,
-        vo2max: hr.vo2max || 0,
-        sleep_hours: (sleep.dailySleepDTO.sleepTimeSeconds || 0) / 3600,
-        time: date.toISOString(),
-      };
-      const writeApi = influx.getWriteApi(
-        process.env.INFLUX_ORG,
-        process.env.INFLUX_BUCKET
-      );
+    const [steps, hr, sleep] = await Promise.all([
+      gcClient.getSteps(date),
+      gcClient.getHeartRate(date),
+      gcClient.getSleepData(date),
+    ]);
+    return {
+      steps,
+      resting_hr: hr.restingHeartRate,
+      vo2max: hr.vo2max || 0,
+      sleep_hours: (sleep.dailySleepDTO.sleepTimeSeconds || 0) / 3600,
+      time: date.toISOString(),
+    };
+  }
+
+  const summaries = await Promise.all(dates.map((d) => limit(() => fetchSummary(d))));
+
+  summaries.sort((a, b) => new Date(a.time) - new Date(b.time));
+
+  const BATCH_SIZE = 50;
+  for (let i = 0; i < summaries.length; i += BATCH_SIZE) {
+    const batch = summaries.slice(i, i + BATCH_SIZE);
+    const writeApi = influx.getWriteApi(
+      process.env.INFLUX_ORG,
+      process.env.INFLUX_BUCKET
+    );
+    const points = batch.map((summary) => {
       const p = new Point('garmin_summary')
         .floatField('steps', summary.steps)
         .floatField('resting_hr', summary.resting_hr)
-        .floatField('vo2max', summary.vo2max || 0)
+        .floatField('vo2max', summary.vo2max)
         .floatField('sleep_hours', summary.sleep_hours);
       if (summary.time) {
         p.timestamp(new Date(summary.time));
       }
-      writeApi.writePoint(p);
-      await writeApi.close();
-      fs.writeFileSync(checkpointPath, dateStr);
-      console.log(`Stored ${dateStr}`);
-    } catch (err) {
-      console.error(`Failed to backfill ${dateStr}:`, err.message);
-    }
+      return p;
+    });
+    writeApi.writePoints(points);
+    await writeApi.close();
+    const last = batch[batch.length - 1];
+    fs.writeFileSync(checkpointPath, last.time.slice(0, 10));
+    console.log(`Stored up to ${last.time.slice(0, 10)}`);
   }
 })();
